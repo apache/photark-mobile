@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="hello">Hello World, Photark_MobileActivity!</string>
+    <string name="app_name">Photark_Mobile</string>
+
+</resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
     <string name="hello">Hello World, PhotArkMobileActivity!</string>
     <string name="app_name">PhotArkMobile</string>
 

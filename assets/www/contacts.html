@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>PhoneGap</title>
+    <script src="scripts/jquery-1.7.2.min.js"></script>
+		<script src="scripts/jquery.mobile-1.1.0.min.js"></script>
+		<script src="scripts/mobiscroll-2.0.full.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/cordova-1.7.0.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js"></script>
+</head>
+<body>
+    <div data-role="page" id="contacts-page">
+        <div data-role="header" data-position="inline">
+            <h1>Contacts</h1>
+            <a href="form.html" data-icon="save" data-theme="b">Add</a>
+        </div>
+        
+        <ul id="contactList" data-role="listview">
+        
+        </ul>
+        
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="map.html">Map</a></li>
+                    <li><a href="compass.html">Compass</a></li>
+                    <li><a href="list.html">List</a></li>
+                    <li><a href="contacts.html" class="ui-btn-active">Contacts</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <script type="text/javascript" charset="utf-8" src="scripts/contacts.js">
+        	onContactsLoad() ;
+        </script>
+    </div>
+</body>
+</html>

@@ -1,5 +1,225 @@
 <!DOCTYPE HTML>
 <html>
+	<head>
+		<title>Photark Mobile</title>
+		<link href="css/jquery.mobile-1.1.0.min.css" rel="stylesheet"
+		type="text/css" />
+		<link href="css/mobiscroll-2.0.full.min.css" rel="stylesheet"
+		type="text/css" />
+		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
+		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/cordova-1.7.0.js" ></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
+		<script type="text/javascript">
+			var pictureSource;
+			// picture source
+			var destinationType;
+			// sets the format of returned value
+
+			// Wait for device
+			document.addEventListener("deviceready", onDeviceReady, false);
+
+			function onDeviceReady() {
+				pictureSource = navigator.camera.PictureSourceType;
+				destinationType = navigator.camera.DestinationType;
+				getContacts();
+				$('#ContactsPage li a').live('click', function() {
+					var name = $(this).text();
+					onContactsClick(name);
+				});
+
+			}
+
+			//Document ready funvtion
+			$(function() {
+				// Handler for Date Picker
+
+				$('#editDate').scroller({
+					preset : 'date',
+					invalid : {
+						daysOfWeek : [0, 6],
+						daysOfMonth : ['5/1', '12/24', '12/25']
+					},
+					theme : 'default',
+					display : 'modal',
+					mode : 'scroller',
+					dateOrder : 'mmD ddy'
+				});
+
+				//Handler for time picker
+				$('#editTime').scroller({
+					preset : 'time',
+					theme : 'default',
+					display : 'modal',
+					mode : 'scroller'
+				});
+
+			});
+
+			function onPhotoDataSuccess(imageData) {
+				var largeImage = document.getElementById('largeImage');
+				largeImage.style.display = 'block';
+				largeImage.src = "data:image/jpeg;base64," + imageData;
+			}
+
+			function onPhotoURISuccess(imageURI) {
+				var largeImage = document.getElementById('largeImage');
+				largeImage.style.display = 'block';
+				largeImage.src = imageURI;
+				$('#myButton').removeClass('ui-disabled');
+				window.resolveLocalFileSystemURI(imageURI, onFileEntryComplete, isFail);
+
+			}
+
+			function onFileEntryComplete(fileEntry) {
+				fileEntry.file(successFile, isFail);
+				fileEntry.getMetadata(successMetadata, isFail);
+
+			}
+
+			function successMetadata(metadata) {
+				$("#metadata").append("<p> LastModified:" + metadata.modificationTime + "</p> ");
+
+			}
+
+			function successFile(file) {
+				$("#metadata").append("<p> Size:" + file.size + "bytes </p> <p> Type:" + file.type + " </p>");
+
+			}
+
+			function isFail() {
+				alert("Error Occured");
+			}
+
+			function capturePhoto() {
+				// Take picture using device camera and retrieve image
+				navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+					destinationType : navigator.camera.DestinationType.FILE_URI,
+					quality : 50
+				});
+			}
+
+			function getPhoto(source) {
+				// Retrieve image file location from specified source
+				navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+					quality : 50,
+					destinationType : destinationType.FILE_URI,
+					sourceType : source
+				});
+			}
+
+			function onFail(message) {
+				alert('Failed because: ' + message);
+			}
+
+			function editDateOnClick() {
+				$('#editDate').scroller('show');
+			}
+
+			function editTimeOnClick() {
+				$('#editTime').scroller('show');
+			}
+		</script>
+
+	</head>
+	<body>
+		<!-- Page Start-->
+		<div id="main" data-role="page" data-theme="b">
+			<!-- Page Header Start -->
+			<div data-role="header">
+				<h1>PhotArc Mobile</h1>
+			</div>
+			<!-- Page Header End -->
+			<!-- Page Body Start -->
+			<div id="a" data-role="content" align="center">
+				<a href="#" data-role="button" onclick="capturePhoto()"
+				data-theme="b">Capture Photo</a>
+				<br>
+				<a href="#"
+				data-role="button" onclick="getPhoto(pictureSource.PHOTOLIBRARY)"
+				data-theme="b">From Photo Library</a>
+				<br>
+				<a href="#EditMetadata"
+				data-role="button" id="myButton" class="ui-disabled" data-theme="b">EditMetadata</a>
+				<br>
+				<img style="display: none;" id="largeImage"
+				src="" height="200" width="200" />
+				<div id="metadata"></div>
+			</div>
+			<!-- Page Body End -->
+			<!-- Page Footer Start -->
+			<div data-role="footer">
+				<h4>Page Footer</h4>
+			</div>
+			<!-- Page Footer End -->
+		</div>
+
+		<!-- Edit metadata page -->
+		<div id="EditMetadata" data-role="page">
+			<div data-role="header" data-position="fixed">
+				<a href="index.html" data-icon="delete">Cancel</a>
+				<h1>Edit Metadata</h1>
+				<a href="index.html" data-icon="check">Save</a>
+			</div>
+
+			<!-- Form Content -->
+			<div data-role="content">
+				<form action="#" method="get">
+
+					<div data-role="fieldcontain">
+						<label for="name"> Photo nick name: </label>
+						<input type="text"
+						name="name" id="nickName" value="" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="name"> Location: </label>
+						<input type="text"
+						name="name" id="editLocation" value="" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="name"> Date: </label>
+						<input type="text" name="name"
+						id="editDate" value="" onclick="editDateOnClick()" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="name"> Time: </label>
+						<input type="text" name="name"
+						id="editTime" value="" onclick="editTimeOnClick()" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="textarea"> People: </label>
+						<textarea cols="40" rows="8" name="textarea" id="editPeople"></textarea>
+						<a href="#ContactsPage" data-role="button" data-theme="a"  data-mini="true">Browse</a>
+					</div>
+
+					<div data-role="fieldcontain">
+						<label for="textarea"> Discription </label>
+						<textarea cols="40" rows="8" name="textarea" id="editDiscription"></textarea>
+					</div>
+
+				</form>
+			</div>
+		</div>
+		<!-- Page End -->
+
+		<!-- Contacts List Page-->
+		<div id="ContactsPage" data-role="page">
+			<div data-role="header">
+				<h1>Contacts</h1>
+			</div>
+			<div data-role="content">
+
+				<ul id="allContacts" data-role="listview" data-filter="true" data-inset="true">
+
+				</ul>
+			</div>
+		</div>
+		<!-- Page End -->
+	</body>
+</html>
+<!DOCTYPE HTML>
+<html>
 <head>
 <title>PhoneGap</title>
 <script type="text/javascript" charset="utf-8" src="cordova-1.7.0.js"></script>
