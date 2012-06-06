@@ -10,7 +10,7 @@
     <name>photark-mobile</name>
 
     <properties>
-        <platform.version>4.0.1.2</platform.version>
+        <platform.version>2.3.3</platform.version>
         <cordova.version>1.7.0</cordova.version>
     </properties>
 
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>4.0.1.2</version>
+            <version>2.3.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -41,7 +41,7 @@
                     <assetsDirectory>${project.basedir}/assets</assetsDirectory>
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <sdk>
-                        <platform>8</platform>
+                        <platform>10</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
