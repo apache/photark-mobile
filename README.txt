@@ -34,13 +34,13 @@ Creating an AVD
 Run
 ~$ android avd
 
-and Create an AVD having platform version >= 2.2
+and Create an AVD having platform version >= 2.3.3
 
 Install Cordova to local repo
 -----------------------------
 
 Run
-~$ mvn install:install-file -Dfile=.libs/cordova-1.7.0.jar -DgroupId=org.apache.cordova  -DartifactId=cordova -Dversion=1.7.0 -Dpackaging=jar
+~$ mvn install:install-file -Dfile=libs/cordova-1.8.0.jar -DgroupId=org.apache.cordova  -DartifactId=cordova -Dversion=1.8.0 -Dpackaging=jar
 
 Deploy and run the app
 ----------------------
