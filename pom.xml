@@ -11,7 +11,7 @@
 
     <properties>
         <platform.version>2.3.3</platform.version>
-        <cordova.version>1.7.0</cordova.version>
+        <cordova.version>1.8.0</cordova.version>
     </properties>
 
     <dependencies>
@@ -28,13 +28,12 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <plugins>
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.0</version>
                 <configuration>
                     <androidManifestFile>${project.basedir}/AndroidManifest.xml
                     </androidManifestFile>
@@ -42,6 +41,7 @@
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <sdk>
                         <platform>10</platform>
+                        <platform>15</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
