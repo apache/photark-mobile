@@ -30,4 +30,5 @@
     <plugin name="FileTransfer" value="org.apache.cordova.FileTransfer"/>
     <plugin name="Capture" value="org.apache.cordova.Capture"/>
     <plugin name="SplashScreen" value="org.apache.cordova.SplashScreen"/>
+    <plugin name="org.apache.cordova.facebook.Connect" value="org.apache.cordova.facebook.ConnectPlugin" />
 </plugins>

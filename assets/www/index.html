@@ -10,6 +10,8 @@
 		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
 		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/cordova-1.8.0.js" ></script>
+		<script src="scripts/cdv-plugin-fb-connect.js"></script><!--Facebook Connect Plugin-->
+		<script src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
@@ -156,11 +158,14 @@
 				data-role="button" onclick="getPhoto(pictureSource.PHOTOLIBRARY)"
 				data-theme="b">From Photo Library</a>
 				<br>
+				<a href="#webAlbum"
+				data-role="button" data-theme="b">Web Album</a>
+				<br>
 				<!-- <a href="#EditMetadata"
 				data-role="button" id="myButton" class="ui-disabled" data-theme="b">EditMetadata</a>
-				<br> -->
+				<br> 
 				<img id="largeImage"
-				src="images/logo.png" height="200" width="200" />
+				src="images/logo.png" height="200" width="200" />-->
 				<!-- <div id="metadata"></div> -->
 			</div>
 			<!-- Page Body End -->
@@ -256,5 +261,114 @@
 			</div>
 		</div>
 		<!-- Page End -->
+		<!-- User's Web Album -->
+		<div id="webAlbum" data-role="page">
+			<!-- Page Header Start -->
+			<div data-role="header" data-position="fixed">
+				<h1>PhotArc Mobile</h1>
+			</div>
+			<!-- Page Header End -->
+			<!-- Content Start-->
+			<div id="a" data-role="content" align="center">
+				<h3>Facebook</h3>
+				<a href="#" data-role="button" onclick="login()"
+				data-theme="b">Login</a>
+				<a href="#" data-role="button" onclick="me()"
+				data-theme="b">Get Friends</a>
+				<div id="data">loading ...</div>    
+				<script>
+					if ((typeof cordova == 'undefined') && (typeof Cordova == 'undefined')) alert('Cordova variable does not exist. Check that you have included cordova.js correctly');
+					if (typeof CDV == 'undefined') alert('CDV variable does not exist. Check that you have included cdv-plugin-fb-connect.js correctly');
+					if (typeof FB == 'undefined') alert('FB variable does not exist. Check that you have included the Facebook JS SDK file.');
+					
+					FB.Event.subscribe('auth.login', function(response) {
+									   /*alert('auth.login event');*/
+									   });
+					
+					FB.Event.subscribe('auth.logout', function(response) {
+									   alert('auth.logout event');
+									   });
+					
+					FB.Event.subscribe('auth.sessionChange', function(response) {
+									   alert('auth.sessionChange event');
+									   });
+					
+					FB.Event.subscribe('auth.statusChange', function(response) {
+									   /*alert('auth.statusChange event');*/
+									   });
+					
+					function getLoginStatus() {
+						FB.getLoginStatus(function(response) {
+										  if (response.status == 'connected') {
+										  alert('logged in');
+										  } else {
+										  alert('not logged in');
+										  }
+										  });
+					}
+					var friendIDs = [];
+					var fdata;
+					function me() {
+						FB.api('/me/friends', { fields: 'id, name, picture' },  function(response) {
+							   if (response.error) {
+							   alert(JSON.stringify(response.error));
+							   } else {
+							   var data = document.getElementById('data');
+							   fdata=response.data;
+							   console.log("fdata: "+fdata);
+							   response.data.forEach(function(item) {
+													 var d = document.createElement('div');
+													 d.innerHTML = "<img src="+item.picture+"/>"+item.name;
+													 data.appendChild(d);
+													 });
+							   }
+							var friends = response.data;
+							console.log(friends.length); 
+							for (var k = 0; k < friends.length && k < 200; k++) {
+								var friend = friends[k];
+								var index = 1;
+
+								friendIDs[k] = friend.id;
+								//friendsInfo[k] = friend;
+							}
+							console.log("friendId's: "+friendIDs);
+							   });
+					}         
+					function login() {
+						FB.login(
+								 function(response) {
+								 if (response.session) {
+								 alert('logged in');
+								 } else {
+								 /*alert('not logged in');*/
+								 }
+								 },
+								 { scope: "user_photos" }
+								 );
+					}            
+					document.addEventListener('deviceready', function() {
+											  try {
+											  FB.init({ appId: "423746790989627", nativeInterface: CDV.FB, useCachedDialogs: false });
+											  document.getElementById('data').innerHTML = "";
+											  } catch (e) {
+											  alert(e);
+											  }
+											  }, false);
+					</script>
+				</div>
+				<!-- Content End -->
+				<!-- Page Footer Start -->
+			<div data-role="footer" data-position="fixed" >
+				<div id="toolbar_message" style="text-align: center">
+					<a href="#" data-role="button" data-icon="search">Search</a>
+				</div>
+				<div id="toolbar_icons" style="display: none;text-align: center" >
+					<a href="#EditMetadata" data-role="button" data-icon="plus" data-transition="flip">Edit Metadata</a>
+					<a href="#" data-role="button" data-icon="search">Search</a>
+					<a href="#ConfirmDelete" data-role="button" data-icon="delete" data-rel="dialog" data-transition="pop">Delete</a>
+				</div>
+			</div>
+			<!-- Page Footer End -->
+		</div>
 	</body>
 </html>
