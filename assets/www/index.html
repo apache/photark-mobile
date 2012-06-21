@@ -15,7 +15,7 @@
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
-		<script type="text/javascript"  src="scripts/dataAccess.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
 		<script type="text/javascript">
 			var pictureSource;
 			// picture source
@@ -34,6 +34,7 @@
 					onContactsClick(name);
 				});
 				getLocation();
+				openDB();
 			}
 
 			//Document ready function
@@ -76,15 +77,14 @@
 				$('#toolbar_icons').show();
 				$('#toolbar_message').hide();
 				$('#toolbar').listview("create");
-				fileURI = imageURI;
+				uri= imageURI;
 				window.resolveLocalFileSystemURI(imageURI, onFileEntryComplete, isFail);
-
+				viewData();
 			}
 
 			function onFileEntryComplete(fileEntry) {
 				fileEntry.file(successFile, isFail);
 				fileEntry.getMetadata(successMetadata, isFail);
-
 			}
 
 			function successMetadata(metadata) {
@@ -136,8 +136,20 @@
 				date = $("#editDate").val();
 				time = $("#editTime").val();
 				locaton = $("#editLocation").val();
-				openDB();
+				people=$("#editPeople").val().split(",");
+				description=$("#editDiscription").val();
+				updateDB();
 			}
+			
+			//This method load existing metadata to edit metadata page on page load
+			$('#EditMetadata').live('pageshow', function () {
+				$("#nickName").val(getNickname());
+				$("#editDate").val(getDate());
+				$("#editTime").val(getTime());
+				$("#editLocation").val(getLocation());
+				$("#editDiscription").val(getDescription());
+			});
+			
 		</script>
 
 	</head>
@@ -186,9 +198,7 @@
 		<!-- Edit metadata page -->
 		<div id="EditMetadata" data-role="page">
 			<div data-role="header" data-position="fixed">
-				<a href="index.html" data-icon="delete">Cancel</a>
 				<h1>Edit Metadata</h1>
-				<a href="index.html" data-icon="check" onclick="save()">Save</a>
 			</div>
 
 			<!-- Form Content -->
@@ -224,7 +234,10 @@
 					<input type="search" name="searchbox" id="locationSearch" value="" />
 				</div>
 			</div>
-
+			<div data-role="footer" data-position="fixed" style="text-align: center">
+				<a href="index.html" data-icon="check" onclick="save()">Save</a>
+				<a href="index.html" data-icon="delete">Cancel</a>
+			</div>
 		</div>
 		<!-- Page End -->
 
