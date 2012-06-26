@@ -17,31 +17,22 @@
  * under the License.
  */
 
-
-var fileURI;
-
-
-function deleteFile() {
-	window.resolveLocalFileSystemURI(fileURI, deleteEntry,
-			function() { alert('error: unable to resovle local fs uri') } );
-	reset();
+function search(){
+	var name=$("searchName").value();
+	var startDate=$("searchStartDate").value();
+	var endDate=$("searchEndDate").value();
+	var location=$("searchLocation").value();
+	var people=$("searchPeople").value().split(",");
+	
+	if(name!===undefined && name!=""){
+		searchDB('WHERE name LIKE "%'+name+'%"');
+	}
 }
 
 
-
-
-function deleteEntry(entry) {
-	entry.remove(function (entry) {
-	alert(fileURI+'removal succeeded');
-	}, function (error) {
-	alert('Error removing file: ' + error.code);
-	});
+function showResults() {
+	var result=getResult();
+	alert(result[0]);
+	//TODO implement
+	
 }
-
-function reset() {
-	$('#toolbar_icons').hide();
-	$('#toolbar_message').show();
-	$('#largeImage').attr("src","images/logo.png");
-}
-
-

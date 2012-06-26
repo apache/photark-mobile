@@ -148,6 +148,12 @@
 				$("#editTime").val(getTime());
 				$("#editLocation").val(getLocation());
 				$("#editDiscription").val(getDescription());
+				var people=getPeople();
+				var s="";
+				for (var i=0; i < people.length; i++) {
+				  s=s+people[i]+',';
+				};
+				$("#editPeople").val(s);
 			});
 			
 		</script>
@@ -173,12 +179,9 @@
 				<a href="#webAlbum"
 				data-role="button" data-theme="b">Web Album</a>
 				<br>
-				<!-- <a href="#EditMetadata"
-				data-role="button" id="myButton" class="ui-disabled" data-theme="b">EditMetadata</a>
-				<br> 
 				<img id="largeImage"
-				src="images/logo.png" height="200" width="200" />-->
-				<!-- <div id="metadata"></div> -->
+				src="images/logo.png" height="200" width="200" />
+				 <div id="metadata"></div>
 			</div>
 			<!-- Page Body End -->
 			<!-- Page Footer Start -->
@@ -188,7 +191,7 @@
 				</div>
 				<div id="toolbar_icons" style="display: none;text-align: center" >
 					<a href="#EditMetadata" data-role="button" data-icon="plus" data-transition="flip">Edit Metadata</a>
-					<a href="#" data-role="button" data-icon="search">Search</a>
+					<a href="#search_photoes" data-role="button" data-icon="search">Search</a>
 					<a href="#ConfirmDelete" data-role="button" data-icon="delete" data-rel="dialog" data-transition="pop">Delete</a>
 				</div>
 			</div>
@@ -383,5 +386,51 @@
 			</div>
 			<!-- Page Footer End -->
 		</div>
+	
+	<!-- Search page -->
+		<div id="search_photoes" data-role="page">
+			<div data-role="header" data-position="fixed">
+				<h1>Search Photos</h1>
+			</div>
+			<div data-role="content">
+				<div data-role="fieldcontain">
+					<label for="search"> Enter name: </label>
+					<input type="text" name="search" id="searchName" value="" />
+				</div>
+
+				<p>
+					Date:
+				</p>
+				<div data-role="fieldcontain">
+					<label for="search">From:</label>
+					<input type="text" name="search" id="searchStartDate" value="" onclick="editDateOnClick()"/>
+					<label for="search">To:</label>
+					<input type="text" name="search" id="searchEndDate" value="" onclick="editDateOnClick()"/>
+				</div>
+
+				<div data-role="fieldcontain">
+					<label for="search"> Enter location: </label>
+					<input type="text" name="search" id="searchLocation" value="" />
+				</div>
+
+				<div data-role="fieldcontain">
+					<label for="textarea"> People: </label>
+					<textarea cols="40" rows="8" name="textarea" id="searchPeople"></textarea>
+					<a href="#ContactsPage" data-role="button" data-theme="a"  data-mini="true">Browse</a>
+				</div>
+
+			</div>
+			<div data-role="footer" data-position="fixed" style="text-align: center">
+				<a href="#"
+				data-role="button" data-mini="true" data-icon="search" onclick="search()">Search</a>
+				<a href="#"
+				data-role="button" data-rel="dialog" data-transition="pop" data-icon="grid" onclick="getPhoto(pictureSource.PHOTOLIBRARY)">Shaw all</a>
+				<a href="index.html"
+				data-role="button" data-mini="true"
+				data-icon="back">Cancel</a>
+			</div>
+		</div>
+		<!-- Page End -->
+
 	</body>
 </html>

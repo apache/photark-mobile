@@ -26,6 +26,9 @@ var location;
 var description;
 var people=new Array();
 var db;
+var clause;
+var result;
+
 
 function getNickname(){
 	return nickname;
@@ -56,6 +59,10 @@ function openDB() {
 	db.transaction(populateDB, errorCB, successCB);
 }
 
+function getResult() {
+	return result;
+}
+
 function populateDB(tx) {
 //	tx.executeSql('DROP TABLE IF EXISTS MAIN');
 //	tx.executeSql('DROP TABLE IF EXISTS PEOPLE');
@@ -77,7 +84,8 @@ function viewData(){
 }
 
 function retriviewDB(tx){
-	tx.executeSql('SELECT * FROM MAIN ', [], querySuccess, errorCB);
+	tx.executeSql('SELECT * FROM MAIN WHERE URI="'+uri+'"', [], querySuccess, errorCB);
+	tx.executeSql('SELECT * FROM PEOPLE WHERE URI="'+uri+'"', [], queryPeopleSuccess, errorCB);
 }
 
 function querySuccess(tx, results){
@@ -86,10 +94,17 @@ function querySuccess(tx, results){
 		nickname=results.rows.item(i).nickname;
 		date=results.rows.item(i).date;
 		time=results.rows.item(i).time;
-//		location=results.rows.item(i).location;
+	///	location=results.rows.item(i).location;
 		description=results.rows.item(i).description;
 	}	
-	//populateMetadata(nickname,date,time,description);
+	updateHome();
+}
+
+function queryPeopleSuccess(tx, results) {
+	var len = results.rows.length;
+	for (var i=0; i<len; i++){
+		people[i]=results.rows.item(i).name;
+	}
 }
 
 function updateDB(){
@@ -102,6 +117,30 @@ function insertToDB(tx) {
 	for (var i = 0; i < people.length; i++) {
 		tx.executeSql('REPLACE INTO PEOPLE (uri,name) VALUES ("'+uri+'","'+people[i]+'")');
 	}
+}
+
+function updateHome(){
+	$("#metadata").append("<p> Name:"+nickname+"</p>");
+	$("#metadata").append("<p> Location:"+location+"</p>");
+}
+
+
+function searchDB(s){
+	clause=s;
+	db.transaction(queryDB, errorCB, successCB);
+}
+
+function queryDB(tx){
+	tx.executeSql('SELECT * FROM MAIN WHERE'+clause, [], searchSuccess, errorCB);
+}
+
+function searchSuccess() {
+	var len = results.rows.length;
+	result=new Array();
+	for (var i=0; i<len; i++){
+		result[i]=results.rows.item(i).name;
+	}
+	clause="";
 }
 
 
