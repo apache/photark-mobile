@@ -42,14 +42,14 @@ function gcsSuccess(contacts) {
 						.append('<li data-role="list-divider">' + divider
 								+ '</li>');
 				list
-						.append('<li><a href="#EditMetadata"><img src="img/contactIcon.png" class="ui-li-icon" alt="Contact" onclick="onContactsClick()"/>'
+						.append('<li><a href="#EditMetadata"><img src="images/contactIcon.png" class="ui-li-icon" alt="Contact" onclick="onContactsClick()"/>'
 								+ names[i] + '</a></li>');
 			} else {
 				if (i == 0)
 					list.append('<li data-role="list-divider">' + divider
 							+ '</li>');
 				list
-						.append('<li><a href="#EditMetadata"><img src="img/contactIcon.png" class="ui-li-icon" alt="Contact" onclick="onContactsClick()"/>'
+						.append('<li><a href="#EditMetadata"><img src="images/contactIcon.png" class="ui-li-icon" alt="Contact" onclick="onContactsClick()"/>'
 								+ names[i] + '</a></li>');
 			}
 		}
