@@ -6,6 +6,13 @@
 		type="text/css" />
 		<link href="css/mobiscroll-2.0.full.min.css" rel="stylesheet"
 		type="text/css" />
+		<style>
+			#facebookMore{
+				border:2px solid;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+			}
+		</style>
 		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
 		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
@@ -16,6 +23,7 @@
 		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/facebook.js"></script>
 		<script type="text/javascript">
 			var pictureSource;
 			// picture source
@@ -155,9 +163,7 @@
 				};
 				$("#editPeople").val(s);
 			});
-			
 		</script>
-
 	</head>
 	<body>
 		<!-- Page Start-->
@@ -289,91 +295,34 @@
 				<h3>Facebook</h3>
 				<a href="#" data-role="button" onclick="login()"
 				data-theme="b">Login</a>
-				<a href="#" data-role="button" onclick="me()"
-				data-theme="b">Get Friends</a>
-				<div id="data">loading ...</div>    
-				<script>
-					if ((typeof cordova == 'undefined') && (typeof Cordova == 'undefined')) alert('Cordova variable does not exist. Check that you have included cordova.js correctly');
-					if (typeof CDV == 'undefined') alert('CDV variable does not exist. Check that you have included cdv-plugin-fb-connect.js correctly');
-					if (typeof FB == 'undefined') alert('FB variable does not exist. Check that you have included the Facebook JS SDK file.');
-					
-					FB.Event.subscribe('auth.login', function(response) {
-									   /*alert('auth.login event');*/
-									   });
-					
-					FB.Event.subscribe('auth.logout', function(response) {
-									   alert('auth.logout event');
-									   });
-					
-					FB.Event.subscribe('auth.sessionChange', function(response) {
-									   alert('auth.sessionChange event');
-									   });
-					
-					FB.Event.subscribe('auth.statusChange', function(response) {
-									   /*alert('auth.statusChange event');*/
-									   });
-					
-					function getLoginStatus() {
-						FB.getLoginStatus(function(response) {
-										  if (response.status == 'connected') {
-										  alert('logged in');
-										  } else {
-										  alert('not logged in');
-										  }
-										  });
-					}
-					var friendIDs = [];
-					var fdata;
-					function me() {
-						FB.api('/me/friends', { fields: 'id, name, picture' },  function(response) {
-							   if (response.error) {
-							   alert(JSON.stringify(response.error));
-							   } else {
-							   var data = document.getElementById('data');
-							   fdata=response.data;
-							   console.log("fdata: "+fdata);
-							   response.data.forEach(function(item) {
-													 var d = document.createElement('div');
-													 d.innerHTML = "<img src="+item.picture+"/>"+item.name;
-													 data.appendChild(d);
-													 });
-							   }
-							var friends = response.data;
-							console.log(friends.length); 
-							for (var k = 0; k < friends.length && k < 200; k++) {
-								var friend = friends[k];
-								var index = 1;
-
-								friendIDs[k] = friend.id;
-								//friendsInfo[k] = friend;
-							}
-							console.log("friendId's: "+friendIDs);
-							   });
-					}         
-					function login() {
-						FB.login(
-								 function(response) {
-								 if (response.session) {
-								 alert('logged in');
-								 } else {
-								 /*alert('not logged in');*/
-								 }
-								 },
-								 { scope: "user_photos" }
-								 );
-					}            
-					document.addEventListener('deviceready', function() {
-											  try {
-											  FB.init({ appId: "423746790989627", nativeInterface: CDV.FB, useCachedDialogs: false });
-											  document.getElementById('data').innerHTML = "";
-											  } catch (e) {
-											  alert(e);
-											  }
-											  }, false);
-					</script>
+				<a href="#" data-role="button" onclick="me(0)"
+				data-theme="b">Get Photos</a>
+				<div id="data">loading ...</div>
+				
 				</div>
-				<!-- Content End -->
-				<!-- Page Footer Start -->
+				<hr />
+				<!--Picasa Begin-->
+				<div data-role="fieldcontain" class="switch">
+					<fieldset data-role="controlgroup">
+						<label for="picasaSwitch">Picasa</label>
+						<select name="picasaSwitch" id="picasaSwitch" data-theme="a" data-role="slider" data-mini="true">
+							<option value="off" selected="true">
+									Off
+							</option>
+							<option value="on">
+									On
+							</option>
+						</select>
+					</fieldset>
+				</div>
+				<div id="picasa"></div>
+				<hr />
+				<!--Picasa End-->
+				<!--Flickr Begin-->
+				
+				<!--Flickr End-->
+			<!-- Content End -->
+			<!-- Page Footer Start -->
 			<div data-role="footer" data-position="fixed" >
 				<div id="toolbar_message" style="text-align: center">
 					<a href="#" data-role="button" data-icon="search">Search</a>
