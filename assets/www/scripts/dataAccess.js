@@ -19,15 +19,15 @@
 
 
 var uri=0;
-var nickname;
+var nickname="Not defined.";
 var date;
 var time;
-var location;
+var loc;
 var description;
 var people=new Array();
 var db;
 var clause;
-var result;
+var result=new Array();
 
 
 function getNickname(){
@@ -43,7 +43,7 @@ function getTime(){
 }
 
 function getLocation(){
-	return location;
+	return loc;
 }
 
 function getDescription(){
@@ -52,6 +52,10 @@ function getDescription(){
 
 function getPeople(){
 	return people;
+}
+
+function getURI() {
+	return uri;
 }
 
 function openDB() {
@@ -78,8 +82,8 @@ function successCB() {
 	//Do nothing
 }
 
-function viewData(){
-//	var db = window.openDatabase("photark", "1.0", "DB", 1000000);
+function viewData(img){
+	uri=img;
 	db.transaction(retriviewDB, errorCB, successCB);
 }
 
@@ -94,7 +98,7 @@ function querySuccess(tx, results){
 		nickname=results.rows.item(i).nickname;
 		date=results.rows.item(i).date;
 		time=results.rows.item(i).time;
-	///	location=results.rows.item(i).location;
+		loc=results.rows.item(i).location;
 		description=results.rows.item(i).description;
 	}	
 	updateHome();
@@ -113,7 +117,8 @@ function updateDB(){
 }
 
 function insertToDB(tx) {
-	tx.executeSql('REPLACE INTO MAIN (uri,nickname, date,time,location,description) VALUES ("'+uri+'","'+nickname+'","'+date+'","'+time+'","'+location+'","'+description+'")');
+	alert('REPLACE INTO MAIN (uri,nickname, date,time,location,description) VALUES ("'+uri+'","'+nickname+'","'+date+'","'+time+'","'+loc+'","'+description+'")');
+	tx.executeSql('REPLACE INTO MAIN (uri,nickname, date,time,location,description) VALUES ("'+uri+'","'+nickname+'","'+date+'","'+time+'","'+loc+'","'+description+'")');
 	for (var i = 0; i < people.length; i++) {
 		tx.executeSql('REPLACE INTO PEOPLE (uri,name) VALUES ("'+uri+'","'+people[i]+'")');
 	}
@@ -121,7 +126,7 @@ function insertToDB(tx) {
 
 function updateHome(){
 	$("#metadata").append("<p> Name:"+nickname+"</p>");
-	$("#metadata").append("<p> Location:"+location+"</p>");
+	$("#metadata").append("<p> Location:"+loc+"</p>");
 }
 
 
@@ -130,17 +135,27 @@ function searchDB(s){
 	db.transaction(queryDB, errorCB, successCB);
 }
 
-function queryDB(tx){
-	tx.executeSql('SELECT * FROM MAIN WHERE'+clause, [], searchSuccess, errorCB);
+//To search photos using people names
+function searchPeople(s) {
+	clause=s;
+	db.transaction(queryDB, errorCB, successCB);
 }
 
-function searchSuccess() {
+function queryDB(tx){
+	alert(clause);
+	tx.executeSql(clause,[], searchSuccess, errorCB);
+}
+
+function searchSuccess(tx, results) {
 	var len = results.rows.length;
 	result=new Array();
 	for (var i=0; i<len; i++){
-		result[i]=results.rows.item(i).name;
+		result[i]=results.rows.item(i).uri;
 	}
 	clause="";
+	showResults(result);
 }
+
+
 
 

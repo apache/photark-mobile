@@ -21,18 +21,15 @@
 var fileURI;
 
 
-function deleteFile() {
-	window.resolveLocalFileSystemURI(fileURI, deleteEntry,
+function deleteFile(filepath) {
+	window.resolveLocalFileSystemURI(filepath, deleteEntry,
 			function() { alert('error: unable to resovle local fs uri') } );
 	reset();
 }
 
-
-
-
 function deleteEntry(entry) {
 	entry.remove(function (entry) {
-	alert(fileURI+'removal succeeded');
+	alert('Removal succeeded');
 	}, function (error) {
 	alert('Error removing file: ' + error.code);
 	});
@@ -43,5 +40,28 @@ function reset() {
 	$('#toolbar_message').show();
 	$('#largeImage').attr("src","images/logo.png");
 }
+
+function fullScreen(uri){
+	$("#Gallery").html('<li><a href="'+uri+'" ><img src="'+uri+'"  alt="Photark" /></a></li>');
+	var myPhotoSwipe = Code.PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), { enableMouseWheel: false , enableKeyboard: false } );
+	myPhotoSwipe.show(0);
+}
+
+function fulllScreen() {
+	var myPhotoSwipe = Code.PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), { enableMouseWheel: false , enableKeyboard: false } );
+	myPhotoSwipe.show(0);
+}
+
+function scaleImageWidth(maxWidth,width,height,image){
+	 if(width > maxWidth){
+         var ratio = maxWidth / width;   // get ratio for scaling image
+         image.width=maxWidth;
+         image.height= height * ratio;  // Scale height based on ratio
+       
+     }
+}
+
+
+
 
 

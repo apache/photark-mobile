@@ -6,29 +6,28 @@
 		type="text/css" />
 		<link href="css/mobiscroll-2.0.full.min.css" rel="stylesheet"
 		type="text/css" />
-		<style>
-			#facebookMore{
-				border:2px solid;
-				-webkit-border-radius: 5px;
-				border-radius: 5px;
-			}
-		</style>
+		<link href="css/custom.css" rel="stylesheet"
+		type="text/css" />
 		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
 		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/cordova-1.8.0.js" ></script>
-		<script src="scripts/cdv-plugin-fb-connect.js"></script><!--Facebook Connect Plugin-->
-		<script src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
+		<script type="text/javascript" src="scripts/cdv-plugin-fb-connect.js"></script><!--Facebook Connect Plugin-->
+		<script type="text/javascript" src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/facebook.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>
+		
 		<script type="text/javascript">
 			var pictureSource;
 			// picture source
 			var destinationType;
 			// sets the format of returned value
+			
+			var windowWidth;
+			var windowHeight;
 
 			// Wait for device
 			document.addEventListener("deviceready", onDeviceReady, false);
@@ -43,6 +42,12 @@
 				});
 				getLocation();
 				openDB();
+				windowWidth=$(window).width();
+				windowHeight=$(window).height();
+				document.getElementById('largeImage').width=windowWidth;
+				//3:4 is the most common aspect ratio
+				document.getElementById('largeImage').height=windowWidth*(3/4);
+				
 			}
 
 			//Document ready function
@@ -51,14 +56,11 @@
 
 				$('#editDate').scroller({
 					preset : 'date',
-					invalid : {
-						daysOfWeek : [0, 6],
-						daysOfMonth : ['5/1', '12/24', '12/25']
-					},
 					theme : 'default',
 					display : 'modal',
 					mode : 'scroller',
-					dateOrder : 'mmD ddy'
+					dateOrder : 'yymmdd',
+					dateFormat : "yy-mm-dd"
 				});
 
 				//Handler for time picker
@@ -68,6 +70,25 @@
 					display : 'modal',
 					mode : 'scroller'
 				});
+				
+				$('#searchStartDate').scroller({
+					preset : 'date',
+					theme : 'default',
+					display : 'modal',
+					mode : 'scroller',
+					dateOrder : 'yymmdd',
+					dateFormat : "yy-mm-dd"
+				});
+				
+				$('#searchEndDate').scroller({
+					preset : 'date',
+					theme : 'default',
+					display : 'modal',
+					mode : 'scroller',
+					dateOrder : 'yymmdd',
+					dateFormat : "yy-mm-dd"
+				});
+				
 
 			});
 
@@ -78,7 +99,10 @@
 			}
 
 			function onPhotoURISuccess(imageURI) {
+				$("#metadata").html("");
 				var largeImage = document.getElementById('largeImage');
+				largeImage.width=windowWidth;
+				largeImage.height=largeImage.width*(3/4);
 				largeImage.style.display = 'block';
 				largeImage.src = imageURI;
 				//$('#myButton').removeClass('ui-disabled');
@@ -131,11 +155,11 @@
 				alert('Failed because: ' + message);
 			}
 
-			function editDateOnClick() {
-				$('#editDate').scroller('show');
+			function editDateOnClick(parent) {
+				parent.scroller('show');
 			}
 
-			function editTimeOnClick() {
+			function editTimeOnClick(parent) {
 				$('#editTime').scroller('show');
 			}
 
@@ -143,7 +167,7 @@
 				nickname = $("#nickName").val();
 				date = $("#editDate").val();
 				time = $("#editTime").val();
-				locaton = $("#editLocation").val();
+				loc= $("#editLocation").val();
 				people=$("#editPeople").val().split(",");
 				description=$("#editDiscription").val();
 				updateDB();
@@ -167,39 +191,45 @@
 	</head>
 	<body>
 		<!-- Page Start-->
-		<div id="main" data-role="page" data-theme="b">
+		<div id="main" data-role="page" data-theme="a">
 			<!-- Page Header Start -->
 			<div data-role="header" data-position="fixed">
 				<h1>PhotArc Mobile</h1>
 			</div>
 			<!-- Page Header End -->
 			<!-- Page Body Start -->
-			<div id="a" data-role="content" align="center">
-				<a href="#" data-role="button" onclick="capturePhoto()"
-				data-theme="b">Capture Photo</a>
-				<br>
-				<a href="#"
-				data-role="button" onclick="getPhoto(pictureSource.PHOTOLIBRARY)"
-				data-theme="b">From Photo Library</a>
-				<br>
-				<a href="#webAlbum"
-				data-role="button" data-theme="b">Web Album</a>
-				<br>
-				<img id="largeImage"
-				src="images/logo.png" height="200" width="200" />
-				 <div id="metadata"></div>
+			<div id="a" data-role="content" align="justify">				
+						
+					<ul id="mainMenu" data-role="listview" data-theme="a" data-inset="false">
+						<img id="largeImage"
+						src="images/logo.png"  />
+						<li data-icon="arrow-r" >
+							<a href="#" onclick="capturePhoto()">Capture Photo</a>
+						</li>
+						<li data-icon="arrow-r" >
+							<a href="#" onclick="getPhoto(pictureSource.PHOTOLIBRARY)">From Photo Library</a>
+						</li>
+						<li data-icon="arrow-r" >
+							<a href="#webAlbum">Web Album</a>
+						</li>
+						<li data-icon="arrow-r" >
+							<a href="#imageInfo" data-rel="dialog" data-transition="pop">Image Info</a>
+						</li>
+					</ul>
+
 			</div>
 			<!-- Page Body End -->
 			<!-- Page Footer Start -->
-			<div data-role="footer" data-position="fixed" >
+			<div data-role="footer"  >
 				<div id="toolbar_message" style="text-align: center">
-					<a href="#" data-role="button" data-icon="search">Search</a>
+					<a href="#search_photoes" data-role="button" data-icon="search">Search</a>
 				</div>
 				<div id="toolbar_icons" style="display: none;text-align: center" >
 					<a href="#EditMetadata" data-role="button" data-icon="plus" data-transition="flip">Edit Metadata</a>
 					<a href="#search_photoes" data-role="button" data-icon="search">Search</a>
 					<a href="#ConfirmDelete" data-role="button" data-icon="delete" data-rel="dialog" data-transition="pop">Delete</a>
 				</div>
+				
 			</div>
 			<!-- Page Footer End -->
 		</div>
@@ -221,12 +251,12 @@
 				<div data-role="fieldcontain">
 					<label for="name"> Date: </label>
 					<input type="text" name="name"
-					id="editDate" value="" onclick="editDateOnClick()" />
+					id="editDate" value="" onclick='editDateOnClick($("#editDate"))' />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="name"> Time: </label>
 					<input type="text" name="name"
-					id="editTime" value="" onclick="editTimeOnClick()" />
+					id="editTime" value="" onclick='editTimeOnClick($("#editTime"))' />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="textarea"> People: </label>
@@ -240,7 +270,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="search"> Location </label>
-					<input type="search" name="searchbox" id="locationSearch" value="" />
+					<input type="text" name="searchbox" id="editLocation" value="" />
 				</div>
 			</div>
 			<div data-role="footer" data-position="fixed" style="text-align: center">
@@ -352,9 +382,9 @@
 				</p>
 				<div data-role="fieldcontain">
 					<label for="search">From:</label>
-					<input type="text" name="search" id="searchStartDate" value="" onclick="editDateOnClick()"/>
+					<input type="text" name="search" id="searchStartDate" value="" onclick='editDateOnClick($("#searchStartDate"))'/>
 					<label for="search">To:</label>
-					<input type="text" name="search" id="searchEndDate" value="" onclick="editDateOnClick()"/>
+					<input type="text" name="search" id="searchEndDate" value="" onclick='editDateOnClick($("#searchEndDate"))'/>
 				</div>
 
 				<div data-role="fieldcontain">
@@ -371,12 +401,38 @@
 			</div>
 			<div data-role="footer" data-position="fixed" style="text-align: center">
 				<a href="#"
-				data-role="button" data-mini="true" data-icon="search" onclick="search()">Search</a>
+				data-role="button" data-mini="true" data-icon="search" onclick='doSearch()'>Search</a>
 				<a href="#"
 				data-role="button" data-rel="dialog" data-transition="pop" data-icon="grid" onclick="getPhoto(pictureSource.PHOTOLIBRARY)">Shaw all</a>
 				<a href="index.html"
 				data-role="button" data-mini="true"
 				data-icon="back">Cancel</a>
+			</div>
+		</div>
+		<!-- Page End -->
+		
+		<!-- Search Results page-->
+		<div id="searchResults" data-role="page">
+			<div data-role="header">
+				<h1>Results</h1>
+			</div>
+			<div data-role="content">
+
+				<div class="ui-grid-a" id="resultGallery" style="padding=5px !important">
+					<!-- To be added dinamically -->
+				</div>
+
+			</div>
+		</div>
+		<!-- Page End -->
+		
+		<!-- Image Info page-->
+		<div id="imageInfo" data-role="page">
+			<div data-role="header">
+				<h1>Image Info</h1>
+			</div>
+			<div data-role="content">				
+				<div id="metadata"></div>
 			</div>
 		</div>
 		<!-- Page End -->

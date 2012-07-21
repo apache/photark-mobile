@@ -1,4 +1,23 @@
-//////////////////////////////////////////////
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+
 function getContacts() {
 	var optFilter = new ContactFindOptions();
 	optFilter.filter = "";
@@ -17,7 +36,6 @@ function gcsError(contactError) {
 }
 
 function gcsSuccess(contacts) {
-	alert('loaded');
 	if (contacts.length != 0) {
 		// get formatted names and sort
 		var names = new Array();
@@ -42,14 +60,14 @@ function gcsSuccess(contacts) {
 						.append('<li data-role="list-divider">' + divider
 								+ '</li>');
 				list
-						.append('<li><a href="#EditMetadata"><img src="images/contactIcon.png" class="ui-li-icon" alt="Contact" onclick="onContactsClick()"/>'
+						.append('<li><a href="#"><img src="images/contactIcon.png" class="ui-li-icon" alt="Contact" onclick=\'onContactsClick("'+names[i]+'")\'/>'
 								+ names[i] + '</a></li>');
 			} else {
 				if (i == 0)
 					list.append('<li data-role="list-divider">' + divider
 							+ '</li>');
 				list
-						.append('<li><a href="#EditMetadata"><img src="images/contactIcon.png" class="ui-li-icon" alt="Contact" onclick="onContactsClick()"/>'
+						.append('<li><a href="#"><img src="images/contactIcon.png" class="ui-li-icon" alt="Contact" onclick=\'onContactsClick("'+names[i]+'")\'/>'
 								+ names[i] + '</a></li>');
 			}
 		}
@@ -61,7 +79,10 @@ function gcsSuccess(contacts) {
 }
 
 function onContactsClick(name){
-	$('#editPeople').append(name+',');
+	var temp=$('#editPeople').val();
+	temp=temp+name;
+	people=temp.split(",");
+	$.mobile.changePage( $("#EditMetadata") );
 }
 
-// ////////////////////////////////////////////////////////////////
+

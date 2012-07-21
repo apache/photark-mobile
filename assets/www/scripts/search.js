@@ -17,22 +17,103 @@
  * under the License.
  */
 
-function search(){
-	var name=$("searchName").value();
-	var startDate=$("searchStartDate").value();
-	var endDate=$("searchEndDate").value();
-	var location=$("searchLocation").value();
-	var people=$("searchPeople").value().split(",");
-	
-	if(name!===undefined && name!=""){
-		searchDB('WHERE name LIKE "%'+name+'%"');
+function doSearch(){
+	var name=$("#searchName").val();
+	var startDate=$("#searchStartDate").val();
+	var endDate=$("#searchEndDate").val();
+	var location=$("#searchLocation").val();
+	var temp=$("#searchPeople").val();
+	var people=new Array();
+	if(temp!=undefined && temp!=""){
+		people=temp.split(",");
 	}
-}
-
-
-function showResults() {
-	var result=getResult();
-	alert(result[0]);
-	//TODO implement
+	if(name=="" && startDate=="" && endDate=="" && location=="" && temp==""){
+		alert("Fill the information!");
+		return;
+	}
+	if( name!="" && startDate=="" && endDate=="" && location=="" && temp==""){
+		searchDB('SELECT * FROM MAIN WHERE nickname LIKE "%'+name+'%";');		
+	}else if(name=="" && (startDate!="" || endDate!="") && location=="" && temp==""){
+		if(startDate!="" && endDate==""){
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'");');
+		}else if(startDate=="" && endDate!=""){
+			searchDB('SELECT * FROM MAIN WHERE date <= date("'+endDate+'");');
+		}else{
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'") and date <= date("'+endDate+'");');
+		}		
+	}else if(temp!=undefined && temp!="" && name=="" && startDate=="" && endDate=="" && location==""){
+		var temp2='SELECT * FROM PEOPLE WHERE ';
+		for ( var int = 0; int < people.length; int++) {
+			if (int != people.length-1) {
+				temp2='LIKE "%'+people[int]+'%" AND';
+			} else{
+				temp2='LIKE "%'+people[int]+'%";';
+			}
+			
+		}
+	}else if(temp=="" && name=="" && startDate=="" && endDate=="" && location!=""){
+		searchDB('SELECT * FROM MAIN WHERE location LIKE "%'+location+'%";');
+	}else if(temp=="" && name!="" && (startDate!="" || endDate!="") && location==""){
+		if(startDate!="" && endDate==""){
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'") AND nickname LIKE "%'+name+'%";');
+		}else if(startDate=="" && endDate!=""){
+			searchDB('SELECT * FROM MAIN WHERE date <= date("'+endDate+'") AND nickname LIKE "%'+name+'%";');
+		}else{
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'") and date <= date("'+endDate+'") AND nickname LIKE "%'+name+'%";');
+		}	
+	}else if(temp=="" && name=="" && (startDate!="" || endDate!="") && location!=""){
+		if(startDate!="" && endDate==""){
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'") AND location LIKE "%'+location+'%";');
+		}else if(startDate=="" && endDate!=""){
+			searchDB('SELECT * FROM MAIN WHERE date <= date("'+endDate+'") AND location LIKE "%'+location+'%";');
+		}else{
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'") and date <= date("'+endDate+'") AND location LIKE "%'+location+'%";');
+		}	
+	}else if(temp!="" && name=="" && (startDate!="" || endDate!="") && location==""){
+		if(startDate!="" && endDate==""){
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'") AND nickname LIKE "%'+name+'%";');
+		}else if(startDate=="" && endDate!=""){
+			searchDB('SELECT * FROM MAIN WHERE date <= date("'+endDate+'") AND nickname LIKE "%'+name+'%";');
+		}else{
+			searchDB('SELECT * FROM MAIN WHERE date >= date("'+startDate+'") and date <= date("'+endDate+'") AND nickname LIKE "%'+name+'%";');
+		}	
+	}
 	
 }
+
+
+function showResults(results) {
+	$("#resultGallery").html("");
+	$("#Gallery").html("");
+	//var results=getResult();
+
+		for ( var int = 0; int < results.length; int++) {
+			alert(results[int]);
+			if (i % 2 == 0) {
+				$("#resultGallery").append('<div class="ui-block-a" ><div style="padding:5px !important;"><img src="'+results[int]+'"  style="height:150px !important; width:100% !important;" onclick=\'selectResult("'+results[int]+'")\' /></div></div>');
+			} else {
+				$("#resultGallery").append('<div class="ui-block-b" ><div style="padding:5px !important;"><img src="'+results[int]+'"  style="height:150px !important; width:100% !important;" onclick=\'selectResult("'+results[int]+'")\' /></div></div>');
+			}
+			$("#Gallery").append('<li><a href="'+results[int]+'" ><img src="'+results[int]+'"  alt="Photark" /></a></li>');
+		}
+	$.mobile.changePage($('#searchResults'));
+}
+
+function selectResult(uri){
+	$("#metadata").html("");
+	var largeImage = document.getElementById('largeImage');
+	largeImage.style.display = 'block';
+	largeImage.src = uri;
+	//$('#myButton').removeClass('ui-disabled');
+	$('#toolbar_icons').show();
+	$('#toolbar_message').hide();
+	$('#toolbar').listview("create");
+	window.resolveLocalFileSystemURI(uri, onFileEntryComplete, isFail);
+	viewData(uri);
+	$('#largeImage').click(function() { fullScreen(largeImage.src); });
+	$.mobile.changePage( $("#main") );
+
+}
+
+
+	
