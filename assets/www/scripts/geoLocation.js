@@ -18,12 +18,13 @@
  */
 
 //<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+var pos;
 
 function onGeoSuccess(position) {
-    alert( 'success' );
+	pos=position;
+    alert( 'Location success' );
 
 }
-
 
 function onGeoError(error) {
     alert('code: '    + error.code    + '\n' +
@@ -32,11 +33,19 @@ function onGeoError(error) {
 
 
 function getGeoLocation(){
-	alert("called");
 	try{
-	navigator.geolocation.getCurrentPosition(onGeoSuccess,onGeoError,{ enableHighAccuracy: true });
+	navigator.geolocation.getCurrentPosition(onGeoSuccess,onGeoError,{ enableHighAccuracy: false });
 	}
 	catch(error){
 		alert('fail');
 	}
+}
+
+function addLocation(){
+	$.mobile.showPageLoadingMsg("b", "Location Updating", false);
+	getGeoLocation();
+//	updateLocation();
+	$.mobile.changePage("#main");
+	$.mobile.hidePageLoadingMsg();
+	
 }

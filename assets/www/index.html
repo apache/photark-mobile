@@ -2,9 +2,12 @@
 <html>
 	<head>
 		<title>Photark Mobile</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="css/jquery.mobile-1.1.0.min.css" rel="stylesheet"
 		type="text/css" />
 		<link href="css/mobiscroll-2.0.full.min.css" rel="stylesheet"
+		type="text/css" />
+		<link href="css/photoswipe.css" rel="stylesheet"
 		type="text/css" />
 		<link href="css/custom.css" rel="stylesheet"
 		type="text/css" />
@@ -12,6 +15,8 @@
 		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
 		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/cordova-1.8.0.js" ></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/klass.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/code.photoswipe-3.0.5.min.js"></script>
 		<script type="text/javascript" src="scripts/cdv-plugin-fb-connect.js"></script><!--Facebook Connect Plugin-->
 		<script type="text/javascript" src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
@@ -19,7 +24,6 @@
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>
-		
 		<script type="text/javascript">
 			var pictureSource;
 			// picture source
@@ -112,6 +116,12 @@
 				uri= imageURI;
 				window.resolveLocalFileSystemURI(imageURI, onFileEntryComplete, isFail);
 				viewData();
+				$('#largeImage').click(function() { fullScreen(largeImage.src); });
+			}
+			
+			function photoCaptureSuccess (uri) {
+			  onPhotoURISuccess(uri);
+			  $.mobile.changePage("#ConfirmLocation");
 			}
 
 			function onFileEntryComplete(fileEntry) {
@@ -135,11 +145,11 @@
 
 			function capturePhoto() {
 				// Take picture using device camera and retrieve image
-				navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+				navigator.camera.getPicture(photoCaptureSuccess, onFail, {
 					destinationType : navigator.camera.DestinationType.FILE_URI,
 					quality : 50
 				});
-
+				
 			}
 
 			function getPhoto(source) {
@@ -202,7 +212,7 @@
 						
 					<ul id="mainMenu" data-role="listview" data-theme="a" data-inset="false">
 						<img id="largeImage"
-						src="images/logo.png"  />
+						src="images/home.png"  />
 						<li data-icon="arrow-r" >
 							<a href="#" onclick="capturePhoto()">Capture Photo</a>
 						</li>
@@ -215,12 +225,23 @@
 						<li data-icon="arrow-r" >
 							<a href="#imageInfo" data-rel="dialog" data-transition="pop">Image Info</a>
 						</li>
+						<li data-icon="arrow-r" >
+							<a href="#help" data-rel="dialog" data-transition="pop">Help</a>
+						</li>
 					</ul>
+					
+				<!-- This is not visible
+				Used to store the uri for photoswipe -->
+				<div id="slideshow" style="display: none;">
+					<ul id="Gallery">
+						<!-- To be added dynamically	 -->
+					</ul>
+				</div>
 
 			</div>
 			<!-- Page Body End -->
 			<!-- Page Footer Start -->
-			<div data-role="footer"  >
+			<div data-role="footer" data-position="fixed">
 				<div id="toolbar_message" style="text-align: center">
 					<a href="#search_photoes" data-role="button" data-icon="search">Search</a>
 				</div>
@@ -432,7 +453,29 @@
 				<h1>Image Info</h1>
 			</div>
 			<div data-role="content">				
-				<div id="metadata"></div>
+				<div id="metadata">
+					<p>Capture or open a photo to view data.</p>
+				</div>
+			</div>
+		</div>
+		<!-- Page End -->
+		
+		<!-- Confirm Location Dialog-->
+		<div id="ConfirmLocation" data-role="dialog">
+			<div data-role="header">
+				<h1>Add location.</h1>
+			</div>
+			<div data-role="content">
+
+				<p>
+					Are you sure you want to add current location to this photo?
+				</p>
+				<a href="#"
+				data-role="button" onclick="addLocation()"
+				data-theme="b">Add</a>
+				<a href="index.html"
+				data-role="button"
+				data-theme="b">Cancel</a>
 			</div>
 		</div>
 		<!-- Page End -->
