@@ -61,6 +61,19 @@ function scaleImageWidth(maxWidth,width,height,image){
      }
 }
 
+function adjustScreenLayout() {
+	windowWidth=$(window).width();
+	windowHeight=$(window).height();
+	document.getElementById('largeImage').width=windowWidth;
+	//3:4 is the most common aspect ratio
+	document.getElementById('largeImage').height=windowWidth*(3/4);
+	
+	$('#map_canvas').css('width',windowWidth*(7/8));
+	$('#map_canvas').css('height',windowHeight*(5/6));
+	$('#map_canvas').css('margin-left','auto');
+	$('#map_canvas').css('margin-right','auto');
+}
+
 
 
 

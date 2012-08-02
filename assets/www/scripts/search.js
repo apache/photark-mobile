@@ -24,6 +24,7 @@ function doSearch(){
 	var location=$("#searchLocation").val();
 	var temp=$("#searchPeople").val();
 	var people=new Array();
+	
 	if(temp!=undefined && temp!=""){
 		people=temp.split(",");
 	}
@@ -113,6 +114,10 @@ function selectResult(uri){
 	$('#largeImage').click(function() { fullScreen(largeImage.src); });
 	$.mobile.changePage( $("#main") );
 
+}
+
+function viewAllImages(){
+	searchDB('SELECT * FROM MAIN WHERE nickname LIKE "%";');
 }
 
 

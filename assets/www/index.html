@@ -20,10 +20,14 @@
 		<script type="text/javascript" src="scripts/cdv-plugin-fb-connect.js"></script><!--Facebook Connect Plugin-->
 		<script type="text/javascript" src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>
+		<script type="text/javascript" charset="utf-8" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.services.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/MapView.js"></script>
 		<script type="text/javascript">
 			var pictureSource;
 			// picture source
@@ -46,12 +50,30 @@
 				});
 				getLocation();
 				openDB();
-				windowWidth=$(window).width();
-				windowHeight=$(window).height();
-				document.getElementById('largeImage').width=windowWidth;
-				//3:4 is the most common aspect ratio
-				document.getElementById('largeImage').height=windowWidth*(3/4);
 				
+				//Screen orientation changed
+				$(window).bind( 'orientationchange', function(e){
+					if ($.event.special.orientationchange.orientation() == "portrait") {
+						adjustScreenLayout();
+					} else {
+						adjustScreenLayout();
+					}
+				});
+				adjustScreenLayout();
+				
+				//To handle menu button clicks
+				document.addEventListener("menubutton", onMenuClick, false);	
+				
+				//Auto complete feature of location
+				var options = {
+  					types: ['(cities)']
+ 				};
+ 
+				var autocomplete = new google.maps.places.Autocomplete($("#editLocation")[0], options);
+	            google.maps.event.addListener(autocomplete, 'place_changed', function() {
+	                var place = autocomplete.getPlace();
+	                console.log(place.address_components);
+	            });		
 			}
 
 			//Document ready function
@@ -92,7 +114,6 @@
 					dateOrder : 'yymmdd',
 					dateFormat : "yy-mm-dd"
 				});
-				
 
 			});
 
@@ -115,12 +136,13 @@
 				$('#toolbar').listview("create");
 				uri= imageURI;
 				window.resolveLocalFileSystemURI(imageURI, onFileEntryComplete, isFail);
-				viewData();
+				viewData(imageURI);
 				$('#largeImage').click(function() { fullScreen(largeImage.src); });
 			}
 			
 			function photoCaptureSuccess (uri) {
 			  onPhotoURISuccess(uri);
+			  clearMetadata();
 			  $.mobile.changePage("#ConfirmLocation");
 			}
 
@@ -180,6 +202,9 @@
 				loc= $("#editLocation").val();
 				people=$("#editPeople").val().split(",");
 				description=$("#editDiscription").val();
+				if(loc!=""){
+					adressToCoordinate(loc);
+				}
 				updateDB();
 			}
 			
@@ -197,6 +222,20 @@
 				};
 				$("#editPeople").val(s);
 			});
+			
+			function clearMetadata(){
+			    $("#nickName").val("Not defined");
+				$("#editDate").val("");
+				$("#editTime").val("");
+				$("#editLocation").val("");
+				$("#editDiscription").val("");
+				$("#editPeople").val("");
+			}
+        
+        	function onMenuClick(){
+        		$.mobile.changePage("#optionMenu");
+        	}
+
 		</script>
 	</head>
 	<body>
@@ -224,9 +263,6 @@
 						</li>
 						<li data-icon="arrow-r" >
 							<a href="#imageInfo" data-rel="dialog" data-transition="pop">Image Info</a>
-						</li>
-						<li data-icon="arrow-r" >
-							<a href="#help" data-rel="dialog" data-transition="pop">Help</a>
 						</li>
 					</ul>
 					
@@ -280,6 +316,10 @@
 					id="editTime" value="" onclick='editTimeOnClick($("#editTime"))' />
 				</div>
 				<div data-role="fieldcontain">
+					<label for="textarea"> Location </label>
+					<input type="text" name="searchbox" id="editLocation" value="" />
+				</div>
+				<div data-role="fieldcontain">
 					<label for="textarea"> People: </label>
 					<textarea cols="40" rows="8" name="textarea" id="editPeople"></textarea>
 					<a href="#ContactsPage" data-role="button" data-theme="a"  data-mini="true">Browse</a>
@@ -288,10 +328,6 @@
 				<div data-role="fieldcontain">
 					<label for="textarea"> Discription </label>
 					<textarea cols="40" rows="8" name="textarea" id="editDiscription"></textarea>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="search"> Location </label>
-					<input type="text" name="searchbox" id="editLocation" value="" />
 				</div>
 			</div>
 			<div data-role="footer" data-position="fixed" style="text-align: center">
@@ -456,6 +492,10 @@
 				<div id="metadata">
 					<p>Capture or open a photo to view data.</p>
 				</div>
+				<div id="infoControlls">
+					<a href="#mapView"
+					data-role="button" data-mini="true" data-icon="star" onclick=''>Show in Map</a>
+				</div>
 			</div>
 		</div>
 		<!-- Page End -->
@@ -479,6 +519,41 @@
 			</div>
 		</div>
 		<!-- Page End -->
+		
+		<!-- Map View-->
+		<div id="mapView" data-role="page">
+			<div data-role="header">
+				<a href="index.html" data-icon="delete">Back</a>
+				<h1>Map View</h1>
+			</div>
+			<div data-role="content">
+				<div class="item rounded dark">					
+					<div id="map_canvas" align="center"></div>
+				</div>		
+			</div>
+		</div>
+		<!-- Page End -->
+		
+		<!-- options menu page-->
+		<div id="optionMenu" data-role="dialog">
+			<div data-role="header">
+				<h1>Menu</h1>
+			</div>
+			<div data-role="content">				
+				<div id="options">
+					<a href="#"
+					data-role="button" data-mini="false" data-icon="grid" onclick='viewAllImages()'>View all photos</a>
+					<a href="#mapView"
+					data-role="button" data-mini="false" data-icon="grid" onclick=''>View all in map</a>
+					<a href="#help"
+					data-role="button" data-mini="false" data-icon="info" onclick=''>Help</a>
+					<a href="#"
+					data-role="button" data-mini="false" data-icon="back" onclick='navigator.app.exitApp()'>Exit</a>
+				</div>
+			</div>
+		</div>
+		<!-- Page End -->
+		
 
 	</body>
 </html>

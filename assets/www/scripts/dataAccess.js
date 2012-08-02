@@ -29,7 +29,6 @@ var db;
 var clause;
 var result=new Array();
 
-
 function getNickname(){
 	return nickname;
 }
@@ -57,6 +56,8 @@ function getPeople(){
 function getURI() {
 	return uri;
 }
+
+
 
 function openDB() {
 	db = window.openDatabase("photark", "1.0", "DB", 1000000);
@@ -116,7 +117,7 @@ function updateDB(){
 	db.transaction(insertToDB, errorCB, successCB);
 }
 
-function insertToDB(tx) {
+function insertToDB(tx) {	
 	alert('REPLACE INTO MAIN (uri,nickname, date,time,location,description) VALUES ("'+uri+'","'+nickname+'","'+date+'","'+time+'","'+loc+'","'+description+'")');
 	tx.executeSql('REPLACE INTO MAIN (uri,nickname, date,time,location,description) VALUES ("'+uri+'","'+nickname+'","'+date+'","'+time+'","'+loc+'","'+description+'")');
 	for (var i = 0; i < people.length; i++) {
@@ -155,6 +156,10 @@ function searchSuccess(tx, results) {
 	clause="";
 	showResults(result);
 }
+
+
+
+
 
 
 
