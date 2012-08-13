@@ -11,18 +11,36 @@
 		type="text/css" />
 		<link href="css/custom.css" rel="stylesheet"
 		type="text/css" />
+		<style>
+			.more
+			{
+				text-align:right;
+			}
+		</style>
 		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
 		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/cordova-1.8.0.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/klass.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/code.photoswipe-3.0.5.min.js"></script>
+		<!--For Facebook Implementation Start-->
 		<script type="text/javascript" src="scripts/cdv-plugin-fb-connect.js"></script><!--Facebook Connect Plugin-->
 		<script type="text/javascript" src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
+		<script type="text/javascript" src="scripts/facebook.js"></script><!--Facebook Implementation-->
+		<!--For Facebook Implementation End-->
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>
+		<!--For Flickr Implementation Start-->
+		<script type="text/javascript" charset="utf-8" src="scripts/childbrowser.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/jquery.md5.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/sha1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/flickr.js"></script>
+		<!--For Flickr Implementation End-->
+		<!--For Picasa Implementation Start-->
+		<script type="text/javascript" charset="utf-8" src="scripts/picasa.js"></script>
+		<!--For Picasa Implementation End-->
 		<script type="text/javascript" charset="utf-8" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.js"></script>
@@ -378,15 +396,22 @@
 			</div>
 			<!-- Page Header End -->
 			<!-- Content Start-->
-			<div id="a" data-role="content" align="center">
-				<h3>Facebook</h3>
-				<a href="#" data-role="button" onclick="login()"
-				data-theme="b">Login</a>
-				<a href="#" data-role="button" onclick="me(0)"
-				data-theme="b">Get Photos</a>
-				<div id="data">loading ...</div>
-				
+				<!--Facebook Start-->
+				<div data-role="fieldcontain" class="switch">
+					<fieldset data-role="controlgroup">
+						<label for="facebookSwitch">Facebook</label>
+						<select name="facebookSwitch" id="facebookSwitch" data-theme="a" data-role="slider" data-mini="true">
+							<option value="off" selected="true">
+									Off
+							</option>
+							<option value="on">
+									On
+							</option>
+						</select>
+					</fieldset>
 				</div>
+				<div id="facebook"></div>
+				<!--Facebook End-->
 				<hr />
 				<!--Picasa Begin-->
 				<div data-role="fieldcontain" class="switch">
@@ -406,7 +431,20 @@
 				<hr />
 				<!--Picasa End-->
 				<!--Flickr Begin-->
-				
+				<div data-role="fieldcontain" class="switch">
+					<fieldset data-role="controlgroup">
+						<label for="flickrSwitch">Flickr</label>
+						<select name="flickrSwitch" id="flickrSwitch" data-theme="a" data-role="slider" data-mini="true">
+							<option value="off" selected="true">
+								Off
+							</option>
+							<option value="on">
+								On
+							</option>
+						</select>
+					</fieldset>
+				</div>
+				<div id="flickr"></div>
 				<!--Flickr End-->
 			<!-- Content End -->
 			<!-- Page Footer Start -->
