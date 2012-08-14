@@ -92,77 +92,6 @@ function adjustScreenLayout() {
 	$('#map_canvas').css('margin-right', 'auto');
 }
 
-function showDialog(e, x, y) {
-	$('<div>').simpledialog2({
-		mode : 'button',
-		headerText : 'Tag',
-		headerClose : true,
-		buttonPrompt : 'Type Name',
-		buttonInput : true,
-		buttons : {
-			'OK' : {
-				click : function() {
-					var name = $.mobile.sdLastInput;
-					showTag(name, x, y);
-					var tgx=new TagObject(name,x,y);
-					tagObjects.push(tg1);
-				}
-			},
-		}
-	})
-}
-
-function TagObject(name, x, y) {
-	this.name = name;
-	this.x = x;
-	this.y = y;
-}
-
-function saveTags() {
-	for (i = 0; i < tagObjects.length; i++) {
-		addTag(tagObjects[i].name, tagObjects[i].x, tagObjects[i].y);
-	}
-	alert(tagObjects[0].x);
-}
-
-function markTags(tagObjectsSaved) {
-
-	for (i = 0; i < tagObjectsSaved.length; i++) {
-		showTag(tagObjectsSaved[i].name, parseInt(tagObjectsSaved[i].x),
-				parseInt(tagObjectsSaved[i].y));
-	}
-}
-
-function showTag(name, x, y) {
-	var img = $('<p>' + name + '</p>');
-	img.css('top', y);
-	img.css('left', x);
-	img.css('color', 'purple');
-	img.appendTo('#tagPicture');
-}
-
-function clearTags() {
-	deleteTags();
-	$('#tagPicture').html('<img id="tagImage"/>');
-	displayTagImage(getURI());
-}
-
-function displayTagImage(uri) {
-	var tagImage = document.getElementById('tagImage');
-	tagImage.style.display = 'block';
-	tagImage.src = uri;
-
-	$('#tagImage').css({
-		// Using jQuery CSS we write the $width variable we previously specified
-		// as a pixel value. We use max-width incase the image is smaller than
-		// our viewport it won't scale it larger. Don't forget to set height to
-		// auto or else it will squish your photos.
-		'max-width' : (windowWidth - 30),
-		'height' : 'auto'
-	});
-
-}
-
 function loadjscssfile(scriptUrl) {
 	var head = document.getElementsByTagName("head")[0];
 	script = document.createElement('script');
@@ -196,14 +125,11 @@ function getCurrentTime() {
 		minutes = "0" + minutes;
 	}
 	var h;
-	if (hours > 11) {
+	if (hours > 12) {
 		h = hours - 12;
-	} else {
-		if (hours < 10) {
-			h = '0' + hours;
-		} else {
-			h = hours;
-		}
+	}
+	if (h < 10) {
+		h = '0' + h;
 	}
 	time += (h + ":" + minutes + " ");
 	if (hours > 11) {
@@ -233,4 +159,20 @@ function onHomeButtonClicked(){
 	$('#galleryButton').show();
 	$('#webAlbumButton').show();
 	$('#helpButton').show();
+}
+
+function onImageUpdated(){
+	$('#imageInfoButton').show();
+	$('#photoTagButton').show();
+	$('#homeButton').show();
+	$('#deleteButton').show();
+	$('#editDataButton').show();
+	$('#searchButton').show();
+	
+	$('#captureButton').hide();
+	$('#galleryButton').hide();
+	$('#webAlbumButton').hide();
+	$('#toolbar_message').hide();
+	$('#helpButton').hide();
+	$('#searchButton').hide();
 }

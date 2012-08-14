@@ -83,6 +83,7 @@ function successCB() {
 
 function viewData(img){
 	uri=img;
+	clearData();
 	db.transaction(retriviewDB, errorCB, successCB);
 }
 
@@ -99,8 +100,18 @@ function querySuccess(tx, results){
 		time=results.rows.item(i).time;
 		loc=results.rows.item(i).location;
 		description=results.rows.item(i).description;
-	}	
+	}
 	updateHome();
+}
+
+function clearData(){
+	nickname="Not defined.";
+	date="";
+	time="";
+	loc="";
+	description="";
+	people=new Array();
+	tagObjectsSaved=new Array();
 }
 
 function queryPeopleSuccess(tx, results) {
@@ -114,8 +125,9 @@ function queryPeopleSuccess(tx, results) {
 }
 
 function updateDB(){
-	var db = window.openDatabase("photark", "1.0", "DB", 1000000);
+	//var db = window.openDatabase("photark", "1.0", "DB", 1000000);
 	db.transaction(insertToDB, errorCB, successCB);
+	updateHome();
 }
 
 function insertToDB(tx) {	
@@ -126,6 +138,7 @@ function insertToDB(tx) {
 }
 
 function updateHome(){
+	$("#metadata").html("");
 	$("#metadata").append("<p> Name: "+nickname+"</p>");
 	$("#metadata").append("<p> Location: "+loc+"</p>");
 	$("#metadata").append("<p> Description: "+description+"</p>");

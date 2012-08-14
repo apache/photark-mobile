@@ -114,16 +114,25 @@ function selectResult(uri){
 	var largeImage = document.getElementById('largeImage');
 	largeImage.style.display = 'block';
 	largeImage.src = uri;
-	$('#imageInfoButton').show();
-	$('#photoTagButton').show();
-	$('#toolbar_icons').show();
-	$('#toolbar_message').hide();
+	onImageUpdated();
 	$('#toolbar').listview("create");
 	window.resolveLocalFileSystemURI(uri, onFileEntryComplete, isFail);
 	viewData(uri);
 	$('#largeImage').click(function() { fullScreen(largeImage.src); });
-	$.mobile.changePage( $("#main") );
+	
+	displayTagImage(uri) ;
+	
+	tagObjects=new Array();
+	
+    $('#largeImage').css({
+          // Using jQuery CSS we write the $width variable we previously specified as a pixel value. We use max-width incase the image is smaller than our viewport it won't scale it larger. Don't forget to set height to auto or else it will squish your photos.
+          'max-width' : windowWidth , 'height' : 'auto'
+    });   
+    
+    tagObjectsSaved=new Array();
+	$('#largeImage').click(function() { fullScreen(largeImage.src); });
 
+	$.mobile.changePage( $("#main") );
 }
 
 function viewAllImages(){

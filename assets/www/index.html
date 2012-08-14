@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head >
 		<title>Photark Mobile</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="css/jquery.mobile-1.1.0.min.css" rel="stylesheet"
@@ -35,7 +35,13 @@
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/tagging.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>	
+		<script type="text/javascript" charset="utf-8" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.js"></script>
+		<!-- <script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.services.js"></script> -->
+		<script type="text/javascript" charset="utf-8" src="scripts/MapView.js"></script>
+		
 		<!--For Flickr Implementation Start-->
 		<script type="text/javascript" charset="utf-8" src="scripts/childbrowser.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/jquery.md5.js"></script>
@@ -58,7 +64,9 @@
 			
 			var windowWidth;
 			var windowHeight;
-
+			
+			var tagObjects;
+			var tagObjectsSaved;
 			var tagObjects;
 			var tagObjectsSaved;
 			// Wait for device
@@ -75,8 +83,8 @@
 					var name = $(this).text();
 					onContactsClick(name);
 				});
-				getLocation();
-				openDB();
+
+				openDB();	//Initialize the database
 				
 				//Screen orientation changed
 				$(window).bind( 'orientationchange', function(e){
@@ -97,19 +105,20 @@
 					]
 				};
 
-				if(google) {
+				// if(google) {
 					var autocomplete = new google.maps.places.Autocomplete($("#editLocation")[0], options);
 					google.maps.event.addListener(autocomplete, 'place_changed', function() {
 						var place = autocomplete.getPlace();
 						//console.log(place.address_components);
 					});
-				} else {
-
-				}
+				// } else {
+// 
+				// }
 			}
 
 			//Document ready function
 			$(function() {
+
 				// Handler for Date Picker
 
 				$('#editDate').scroller({
@@ -173,19 +182,7 @@
 				largeImage.style.display = 'block';
 				largeImage.src = imageURI;
 				
-				$('#imageInfoButton').show();
-				$('#photoTagButton').show();
-				$('#homeButton').show();
-				$('#deleteButton').show();
-				$('#editDataButton').show();
-				
-				$('#captureButton').hide();
-				$('#galleryButton').hide();
-				$('#webAlbumButton').hide();
-				$('#searchButton').hide();
-				$('#toolbar_message').hide();
-				$('#helpButton').hide();
-				
+				onImageUpdated();				
 				
 				$('#toolbar').listview("create");
 				uri= imageURI;
@@ -203,6 +200,7 @@
 			    tagObjectsSaved=new Array();
 				viewData(imageURI);
 				$('#largeImage').click(function() { fullScreen(largeImage.src); });
+
 			}
 			
 			function photoCaptureSuccess (uri) {
@@ -550,7 +548,7 @@
 				</div>
 
 				<div data-role="fieldcontain">
-					<label for="textarea"> People: </label>
+					<label for="textarea"> People (Separated by commas): </label>
 					<textarea cols="40" rows="8" name="textarea" id="searchPeople"></textarea>
 					<a href="#ContactsPage" data-role="button" data-theme="a"  data-mini="true">Browse</a>
 				</div>
