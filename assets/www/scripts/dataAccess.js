@@ -29,6 +29,7 @@ var db;
 var clause;
 var result=new Array();
 
+
 function getNickname(){
 	return nickname;
 }
@@ -58,7 +59,6 @@ function getURI() {
 }
 
 
-
 function openDB() {
 	db = window.openDatabase("photark", "1.0", "DB", 1000000);
 	db.transaction(populateDB, errorCB, successCB);
@@ -69,10 +69,8 @@ function getResult() {
 }
 
 function populateDB(tx) {
-//	tx.executeSql('DROP TABLE IF EXISTS MAIN');
-//	tx.executeSql('DROP TABLE IF EXISTS PEOPLE');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS MAIN (uri unique,nickname, date,time,location,description)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS PEOPLE (uri,name,PRIMARY KEY (uri, name))');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS PEOPLE (uri,name,x,y,PRIMARY KEY (uri, name))');
 }
 
 function errorCB(err) {
@@ -107,8 +105,11 @@ function querySuccess(tx, results){
 
 function queryPeopleSuccess(tx, results) {
 	var len = results.rows.length;
+	
 	for (var i=0; i<len; i++){
 		people[i]=results.rows.item(i).name;
+		var tg1=new TagObject(results.rows.item(i).name,results.rows.item(i).x,results.rows.item(i).y);
+		tagObjectsSaved.push(tg1);
 	}
 }
 
@@ -118,7 +119,6 @@ function updateDB(){
 }
 
 function insertToDB(tx) {	
-	alert('REPLACE INTO MAIN (uri,nickname, date,time,location,description) VALUES ("'+uri+'","'+nickname+'","'+date+'","'+time+'","'+loc+'","'+description+'")');
 	tx.executeSql('REPLACE INTO MAIN (uri,nickname, date,time,location,description) VALUES ("'+uri+'","'+nickname+'","'+date+'","'+time+'","'+loc+'","'+description+'")');
 	for (var i = 0; i < people.length; i++) {
 		tx.executeSql('REPLACE INTO PEOPLE (uri,name) VALUES ("'+uri+'","'+people[i]+'")');
@@ -126,8 +126,22 @@ function insertToDB(tx) {
 }
 
 function updateHome(){
-	$("#metadata").append("<p> Name:"+nickname+"</p>");
-	$("#metadata").append("<p> Location:"+loc+"</p>");
+	$("#metadata").append("<p> Name: "+nickname+"</p>");
+	$("#metadata").append("<p> Location: "+loc+"</p>");
+	$("#metadata").append("<p> Description: "+description+"</p>");
+	$("#metadata").append("<p> Tags: "+people+"</p>");
+	$("#metadata").append("<p> Date: "+date+"</p>");
+	$("#metadata").append("<p> Time: "+time+"</p>");
+}
+
+function addTag(name,x,y){
+	db.transaction(function(tx){
+		  saveTag(tx,uri,name,x,y);
+	}, errorCB, successCB);
+}
+
+function saveTag(tx,uri,name,x,y) {
+	tx.executeSql('REPLACE INTO PEOPLE (uri,name,x,y) VALUES ("'+uri+'","'+name+'","'+x+'","'+y+'")');
 }
 
 
@@ -155,6 +169,14 @@ function searchSuccess(tx, results) {
 	}
 	clause="";
 	showResults(result);
+}
+
+function deleteTags(){
+	db.transaction(deleteTagRecords, errorCB, successCB);
+}
+
+function deleteTagRecords(tx){
+	tx.executeSql('DELETE FROM PEOPLE WHERE URI="'+uri+'"');
 }
 
 

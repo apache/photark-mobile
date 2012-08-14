@@ -9,14 +9,16 @@
 		type="text/css" />
 		<link href="css/photoswipe.css" rel="stylesheet"
 		type="text/css" />
+		<link href="css/jquery.mobile.simpledialog.css" rel="stylesheet"
+		type="text/css" />
 		<link href="css/custom.css" rel="stylesheet"
 		type="text/css" />
-		<style>
+		<!-- <style>
 			.more
 			{
 				text-align:right;
 			}
-		</style>
+		</style> -->
 		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
 		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
@@ -28,8 +30,10 @@
 		<script type="text/javascript" src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
 		<script type="text/javascript" src="scripts/facebook.js"></script><!--Facebook Implementation-->
 		<!--For Facebook Implementation End-->
+		<script type="text/javascript" charset="utf-8" src="scripts/jquery.mobile.simpledialog2.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/tagging.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>
 		<!--For Flickr Implementation Start-->
@@ -44,7 +48,7 @@
 		<script type="text/javascript" charset="utf-8" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.js"></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.services.js"></script>
+		<!-- <script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.services.js"></script> -->
 		<script type="text/javascript" charset="utf-8" src="scripts/MapView.js"></script>
 		<script type="text/javascript">
 			var pictureSource;
@@ -55,10 +59,15 @@
 			var windowWidth;
 			var windowHeight;
 
+			var tagObjects;
+			var tagObjectsSaved;
 			// Wait for device
 			document.addEventListener("deviceready", onDeviceReady, false);
 
 			function onDeviceReady() {
+				
+				checkNetwork();
+				
 				pictureSource = navigator.camera.PictureSourceType;
 				destinationType = navigator.camera.DestinationType;
 				getContacts();
@@ -84,14 +93,19 @@
 				
 				//Auto complete feature of location
 				var options = {
-  					types: ['(cities)']
- 				};
- 
-				var autocomplete = new google.maps.places.Autocomplete($("#editLocation")[0], options);
-	            google.maps.event.addListener(autocomplete, 'place_changed', function() {
-	                var place = autocomplete.getPlace();
-	                console.log(place.address_components);
-	            });		
+  					types: ['(cities)'
+					]
+				};
+
+				if(google) {
+					var autocomplete = new google.maps.places.Autocomplete($("#editLocation")[0], options);
+					google.maps.event.addListener(autocomplete, 'place_changed', function() {
+						var place = autocomplete.getPlace();
+						//console.log(place.address_components);
+					});
+				} else {
+
+				}
 			}
 
 			//Document ready function
@@ -132,6 +146,17 @@
 					dateOrder : 'yymmdd',
 					dateFormat : "yy-mm-dd"
 				});
+				
+				 $("#tagPicture").click(function(e) {
+				 	 e.preventDefault();
+				 	 var x = e.pageX - this.offsetLeft;
+				     var y = e.pageY - this.offsetTop;				     
+				 	 showDialog(e,x,y) ;
+			    })
+			    	
+			    $("#tagPicture").css({ 
+					    'position': 'relative'
+			    });
 
 			});
 
@@ -144,16 +169,38 @@
 			function onPhotoURISuccess(imageURI) {
 				$("#metadata").html("");
 				var largeImage = document.getElementById('largeImage');
-				largeImage.width=windowWidth;
-				largeImage.height=largeImage.width*(3/4);
+
 				largeImage.style.display = 'block';
 				largeImage.src = imageURI;
-				//$('#myButton').removeClass('ui-disabled');
-				$('#toolbar_icons').show();
+				
+				$('#imageInfoButton').show();
+				$('#photoTagButton').show();
+				$('#homeButton').show();
+				$('#deleteButton').show();
+				$('#editDataButton').show();
+				
+				$('#captureButton').hide();
+				$('#galleryButton').hide();
+				$('#webAlbumButton').hide();
+				$('#searchButton').hide();
 				$('#toolbar_message').hide();
+				$('#helpButton').hide();
+				
+				
 				$('#toolbar').listview("create");
 				uri= imageURI;
 				window.resolveLocalFileSystemURI(imageURI, onFileEntryComplete, isFail);
+				
+				displayTagImage(imageURI) ;
+				
+				tagObjects=new Array();
+				
+			    $('#largeImage').css({
+			          // Using jQuery CSS we write the $width variable we previously specified as a pixel value. We use max-width incase the image is smaller than our viewport it won't scale it larger. Don't forget to set height to auto or else it will squish your photos.
+			          'max-width' : windowWidth , 'height' : 'auto'
+			    });   
+			    
+			    tagObjectsSaved=new Array();
 				viewData(imageURI);
 				$('#largeImage').click(function() { fullScreen(largeImage.src); });
 			}
@@ -161,6 +208,9 @@
 			function photoCaptureSuccess (uri) {
 			  onPhotoURISuccess(uri);
 			  clearMetadata();
+			  date=getCurrentDate();
+			  time=getCurrentTime();
+			  updateDB();
 			  $.mobile.changePage("#ConfirmLocation");
 			}
 
@@ -241,6 +291,10 @@
 				$("#editPeople").val(s);
 			});
 			
+			$('#photoTag').live('pageshow', function () {
+				markTags(tagObjectsSaved);
+			});
+			
 			function clearMetadata(){
 			    $("#nickName").val("Not defined");
 				$("#editDate").val("");
@@ -270,17 +324,29 @@
 					<ul id="mainMenu" data-role="listview" data-theme="a" data-inset="false">
 						<img id="largeImage"
 						src="images/home.png"  />
-						<li data-icon="arrow-r" >
+						<li data-icon="arrow-r" id="captureButton">
 							<a href="#" onclick="capturePhoto()">Capture Photo</a>
 						</li>
-						<li data-icon="arrow-r" >
-							<a href="#" onclick="getPhoto(pictureSource.PHOTOLIBRARY)">From Photo Library</a>
+						<li data-icon="arrow-r" id="galleryButton">
+							<a href="#" onclick="getPhoto(pictureSource.PHOTOLIBRARY)">From Gallery</a>
 						</li>
-						<li data-icon="arrow-r" >
+						<li data-icon="arrow-r" id="webAlbumButton">
 							<a href="#webAlbum">Web Album</a>
 						</li>
-						<li data-icon="arrow-r" >
-							<a href="#imageInfo" data-rel="dialog" data-transition="pop">Image Info</a>
+						<li data-icon="arrow-r" id="searchButton">
+							<a href="#search_photoes">Search</a>
+						</li>
+						<li id="imageInfoButton" data-icon="arrow-r" style="display: none">
+							<a href="#imageInfo" data-rel="dialog" >Image Info</a>
+						</li>
+						<li id="photoTagButton" data-icon="arrow-r" style="display: none">
+							<a href="#photoTag">View tags</a>
+						</li>
+						<li id="editDataButton" data-icon="arrow-r" style="display: none">
+							<a href="#EditMetadata">Edit image data</a>
+						</li>
+						<li id="deleteButton" data-icon="arrow-r" style="display: none" data-rel="dialog">
+							<a href="#ConfirmDelete">Delete Photo</a>
 						</li>
 					</ul>
 					
@@ -296,13 +362,9 @@
 			<!-- Page Body End -->
 			<!-- Page Footer Start -->
 			<div data-role="footer" data-position="fixed">
-				<div id="toolbar_message" style="text-align: center">
-					<a href="#search_photoes" data-role="button" data-icon="search">Search</a>
-				</div>
-				<div id="toolbar_icons" style="display: none;text-align: center" >
-					<a href="#EditMetadata" data-role="button" data-icon="plus" data-transition="flip">Edit Metadata</a>
-					<a href="#search_photoes" data-role="button" data-icon="search">Search</a>
-					<a href="#ConfirmDelete" data-role="button" data-icon="delete" data-rel="dialog" data-transition="pop">Delete</a>
+				<div id="toolbar_icons" style="text-align: center" >
+					<a href="#" id="homeButton" data-role="button" data-icon="home" style="display: none" onclick="onHomeButtonClicked()">Home</a>
+					<a href="#" id="helpButton" data-role="button" data-icon="info" >Help</a>
 				</div>
 				
 			</div>
@@ -544,16 +606,15 @@
 				<h1>Add location.</h1>
 			</div>
 			<div data-role="content">
-
 				<p>
-					Are you sure you want to add current location to this photo?
+					Do you want to add current location to this photo?
 				</p>
 				<a href="#"
 				data-role="button" onclick="addLocation()"
-				data-theme="b">Add</a>
+				data-theme="b">Yes</a>
 				<a href="index.html"
 				data-role="button"
-				data-theme="b">Cancel</a>
+				data-theme="b">No</a>
 			</div>
 		</div>
 		<!-- Page End -->
@@ -588,6 +649,28 @@
 					<a href="#"
 					data-role="button" data-mini="false" data-icon="back" onclick='navigator.app.exitApp()'>Exit</a>
 				</div>
+			</div>
+		</div>
+		<!-- Page End -->
+		
+		<!-- photo tag page-->
+		<div id="photoTag" data-role="page" data-add-back-btn="true"  data-theme="a">
+			<div data-role="header" >
+				<h1>Tag Photo</h1>
+			</div>
+			<div data-role="content">
+				<div id="tagPicture">
+					<img id="tagImage"/>
+				</div>
+				<a href="#" id="enableTaggingButton"
+				data-role="button" data-mini="false" data-icon="grid" onclick='enableTagging()'>Enable Tagging</a>
+				<a href="#" id="saveTagsButton"
+				data-role="button" data-mini="false" data-icon="grid" style="display: none" onclick='saveTags()'>Save tags</a>
+				<a href="#" id="clearTagsButton"
+				data-role="button" data-mini="false" data-icon="delete" style="display: none" onclick='clearTags()'>Clear tags</a>
+				<a href="#" id="cancelTaggingButton"
+				data-role="button" data-mini="false" data-icon="grid" style="display: none" onclick='enableTagging()'>Cancel</a>
+				
 			</div>
 		</div>
 		<!-- Page End -->
