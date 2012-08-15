@@ -20,23 +20,27 @@
 var tagEnabled=false;
 
 function showDialog(e, x, y) {
-	$('<div>').simpledialog2({
-		mode : 'button',
-		headerText : 'Tag',
-		headerClose : true,
-		buttonPrompt : 'Type Name',
-		buttonInput : true,
-		buttons : {
-			'OK' : {
-				click : function() {
-					var name = $.mobile.sdLastInput;
-					showTag(name, x, y);
-					var tgx = new TagObject(name, x, y);
-					tagObjects.push(tgx);
-				}
-			},
-		}
-	})
+	if(tagEnabled){
+		$('<div>').simpledialog2({
+			mode : 'button',
+			headerText : 'Tag',
+			headerClose : true,
+			buttonPrompt : 'Type Name',
+			buttonInput : true,
+			buttons : {
+				'OK' : {
+					click : function() {
+							var name = $.mobile.sdLastInput;
+							showTag(name, x, y);
+							var tgx = new TagObject(name, x, y);
+							tagObjects.push(tgx);
+					}
+				},
+			}
+		})
+	}else{
+		alert("Tagging not enabled.");
+	}
 }
 
 function TagObject(name, x, y) {

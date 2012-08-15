@@ -101,7 +101,6 @@ function querySuccess(tx, results){
 		loc=results.rows.item(i).location;
 		description=results.rows.item(i).description;
 	}
-	updateHome();
 }
 
 function clearData(){
@@ -116,12 +115,12 @@ function clearData(){
 
 function queryPeopleSuccess(tx, results) {
 	var len = results.rows.length;
-	
 	for (var i=0; i<len; i++){
-		people[i]=results.rows.item(i).name;
+		people.push(results.rows.item(i).name);
 		var tg1=new TagObject(results.rows.item(i).name,results.rows.item(i).x,results.rows.item(i).y);
 		tagObjectsSaved.push(tg1);
 	}
+	updateHome();
 }
 
 function updateDB(){
@@ -138,11 +137,15 @@ function insertToDB(tx) {
 }
 
 function updateHome(){
+	temp4="";
+	for (i = 0; i < tagObjectsSaved.length; i++) {
+		temp4+=tagObjectsSaved[i].name+", ";
+	}
 	$("#metadata").html("");
 	$("#metadata").append("<p> Name: "+nickname+"</p>");
 	$("#metadata").append("<p> Location: "+loc+"</p>");
 	$("#metadata").append("<p> Description: "+description+"</p>");
-	$("#metadata").append("<p> Tags: "+people+"</p>");
+	$("#metadata").append("<p> Tags: "+temp4+"</p>");
 	$("#metadata").append("<p> Date: "+date+"</p>");
 	$("#metadata").append("<p> Time: "+time+"</p>");
 }
@@ -170,7 +173,6 @@ function searchPeople(s) {
 }
 
 function queryDB(tx){
-	alert(clause);
 	tx.executeSql(clause,[], searchSuccess, errorCB);
 }
 

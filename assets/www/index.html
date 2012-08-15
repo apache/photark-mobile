@@ -105,15 +105,7 @@
 					]
 				};
 
-				// if(google) {
-					var autocomplete = new google.maps.places.Autocomplete($("#editLocation")[0], options);
-					google.maps.event.addListener(autocomplete, 'place_changed', function() {
-						var place = autocomplete.getPlace();
-						//console.log(place.address_components);
-					});
-				// } else {
-// 
-				// }
+				
 			}
 
 			//Document ready function
@@ -166,6 +158,16 @@
 			    $("#tagPicture").css({ 
 					    'position': 'relative'
 			    });
+			    
+			    if(google) {
+					var autocomplete = new google.maps.places.Autocomplete($("#editLocation")[0], options);
+					google.maps.event.addListener(autocomplete, 'place_changed', function() {
+						var place = autocomplete.getPlace();
+						//console.log(place.address_components);
+					});
+				} else {
+					alert("location services not available");
+				}
 
 			});
 
@@ -187,8 +189,6 @@
 				$('#toolbar').listview("create");
 				uri= imageURI;
 				window.resolveLocalFileSystemURI(imageURI, onFileEntryComplete, isFail);
-				
-				displayTagImage(imageURI) ;
 				
 				tagObjects=new Array();
 				
@@ -290,6 +290,8 @@
 			});
 			
 			$('#photoTag').live('pageshow', function () {
+				$('#tagPicture').html('<img id="tagImage"/>');
+				displayTagImage(uri) ;
 				markTags(tagObjectsSaved);
 			});
 			
@@ -362,7 +364,7 @@
 			<div data-role="footer" data-position="fixed">
 				<div id="toolbar_icons" style="text-align: center" >
 					<a href="#" id="homeButton" data-role="button" data-icon="home" style="display: none" onclick="onHomeButtonClicked()">Home</a>
-					<a href="#" id="helpButton" data-role="button" data-icon="info" >Help</a>
+					<a href="#help" id="helpButton" data-role="button" data-icon="info" >Help</a>
 				</div>
 				
 			</div>
@@ -408,7 +410,7 @@
 					<textarea cols="40" rows="8" name="textarea" id="editDiscription"></textarea>
 				</div>
 			</div>
-			<div data-role="footer" data-position="fixed" style="text-align: center">
+			<div data-role="footer" style="text-align: center">
 				<a href="index.html" data-icon="check" onclick="save()">Save</a>
 				<a href="index.html" data-icon="delete">Cancel</a>
 			</div>
@@ -644,8 +646,10 @@
 					data-role="button" data-mini="false" data-icon="grid" onclick=''>View all in map</a>
 					<a href="#help"
 					data-role="button" data-mini="false" data-icon="info" onclick=''>Help</a>
+					<a href="#about"
+					data-role="button" data-mini="false" data-icon="info" onclick=''>About</a>
 					<a href="#"
-					data-role="button" data-mini="false" data-icon="back" onclick='navigator.app.exitApp()'>Exit</a>
+					data-role="button" data-mini="false" data-icon="delete" onclick='navigator.app.exitApp()'>Exit</a>
 				</div>
 			</div>
 		</div>
@@ -669,6 +673,39 @@
 				<a href="#" id="cancelTaggingButton"
 				data-role="button" data-mini="false" data-icon="grid" style="display: none" onclick='enableTagging()'>Cancel</a>
 				
+			</div>
+		</div>
+		<!-- Page End -->
+		
+		<!-- help page-->
+		<div id="help" data-role="page" data-add-back-btn="true"  data-theme="a">
+			<div data-role="header" >
+				<h1>Help</h1>
+			</div>
+			<div data-role="content">
+				<ul>
+					<li>To get started caputre a photo, open exsisting photo or go to web albums</li>
+					<li>You can organize photoes by editing image related data and saving</li>
+					<li>You can search photoes according to data you have added</li>
+					<li>You can tag people in your photo by going to view tags section</li>
+					<li>You can view a image full screen by tapping on it</li>
+					<li>Deleting a photo through the application will delete the photo from phone memory too</li>
+				</ul>
+			</div>
+		</div>
+		<!-- Page End -->
+		
+		<!-- About page-->
+		<div id="about" data-role="dialog" data-add-back-btn="true"  data-theme="a">
+			<div data-role="header" >
+				<h1>About</h1>
+			</div>
+			<div data-role="content" style="text-align:center">
+				<p>A free and open source photo manager application for mobile devices.</p>
+				<br/>
+				<a  href="http://incubator.apache.org/photark/">Project home page</a>
+				<br/>
+				<p align="center">Apache Software foundation 2012</p>
 			</div>
 		</div>
 		<!-- Page End -->

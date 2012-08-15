@@ -23,7 +23,7 @@ $('#mapView').live("pageshow", function() {
 		var geocoder2 = new google.maps.Geocoder();
 		geocoder2.geocode({'address': getLocation()}, function(results, status) {
 		    if (status == google.maps.GeocoderStatus.OK) {		        
-		        $('#map_canvas').gmap({'center': new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()), 'zoom': 10, 'disableDefaultUI':true, 'callback': function() {
+		        $('#map_canvas').gmap({'center': new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()), 'zoom': 10, 'disableDefaultUI':false, 'callback': function() {
 					var self = this;
 					self.addMarker({'position': this.get('map').getCenter() }).click(function() {
 						self.openInfoWindow({ 'content': 'Hello World!' }, this);
