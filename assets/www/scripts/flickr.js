@@ -50,18 +50,18 @@ function get_userphotos(oauth_token,oauth_token_secret)
 					data.photos.photo.forEach(function(item){
 						if(item.title===undefined)
 						{
-							$('#flickr').append('<img src="http://farm'+item.farm+'.staticflickr.com/'+item.server+'/'+item.id+'_'+item.secret+'_t.jpg" /><br />No Caption<br />');
+							('#flickr').append('<div class="cell"><a href='+"#"+'><img class="image" src="http://farm'+item.farm+'.staticflickr.com/'+item.server+'/'+item.id+'_'+item.secret+'_t.jpg" /></a><br />No Caption<br /></div>');
 						}
 						else
 						{
-							$('#flickr').append('<img src="http://farm'+item.farm+'.staticflickr.com/'+item.server+'/'+item.id+'_'+item.secret+'_t.jpg" /><br />'+item.title+'<br />');
+							$('#flickr').append('<div class="cell"><a href='+"#"+'><img class="image" src="http://farm'+item.farm+'.staticflickr.com/'+item.server+'/'+item.id+'_'+item.secret+'_t.jpg" /></a><br />'+item.title.substr(0,20)+"..."+'<br /></div>');
 						}
 					});
 					console.log(page);
 					console.log(photos_page_max);
 					if(photos_page_max!=page)
 					{
-						$('#flickr').append($('<a id="flickrMore" class="more" data-role="button" data-icon="forward" onclick="get_userphotos(oauth_token,oauth_token_secret)" />').text('More..'));
+						$('#flickr').append($('<a data-role="button" data-inline="true" data-theme="a" data-icon="arrow-d" data-iconpos="right" id="flickrMore" class="more" onclick="get_userphotos(oauth_token,oauth_token_secret)" />').text('More..'));
 					}
 				},
 		error: function( error ){

@@ -51,17 +51,18 @@ function me() {
 				var d = document.createElement('div');
 				if(item.name===undefined)
 				{
-					d.innerHTML = "<img src="+item.picture+"/><br />"+"No caption";
+					d.innerHTML = "<div class='cell'><a href="+"#"+"><img class='image' src="+item.picture+"/></a><br />"+"No caption"+"</div>";
 				}
 				else
 				{
-					d.innerHTML = "<img src="+item.picture+"/><br />"+item.name;
+					d.innerHTML = "<div class='cell'><a href="+"#"+"><img class='image' src="+item.picture+"/></a><br />"+item.name.substr(0,20)+"..."+"</div>";
 				}
 				data.appendChild(d);
 			});
 	}
 	count=count+8;
-	$('#facebook').append($('<a id="facebookMore" class="more" data-role="button" data-icon="forward" onclick="me()" />').text('More..'));
+	//$('#facebook').append($('<a data-role="button" data-inline="true" data-direction="reverse" data-transition="fade" data-theme="a" href="#page1" data-icon="arrow-d" data-iconpos="right" id="facebookMore" class="more" data-role="button" data-icon="forward" onclick="me()" />').text('More..'));
+	$('#facebook').append('<a data-role="button" data-inline="true" data-theme="a" data-icon="arrow-d" data-iconpos="right" id="facebookMore" class="more" onclick="me()">More...</a>');
    });
 }         
 function login() {

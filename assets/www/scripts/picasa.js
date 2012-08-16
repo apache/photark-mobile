@@ -23,18 +23,18 @@ function listing_photos(access_token,refresh_token){
 					{
 						if($(this).find('summary').text()==='')
 						{
-							$('#picasa').append('<img src="'+$(this).find('thumbnail').attr('url')+'" /><br />No Caption<br />');
+							$('#picasa').append('<div class="cell"><a href='+"#"+'><img class="image" src="'+$(this).find('thumbnail').attr('url')+'" /></a><br />No Caption<br /></div>');
 						}
 						else
 						{
 							console.log($(this).find('thumbnail').attr('url')+'----'+$(this).find('summary').text());
-							$('#picasa').append('<img src="'+$(this).find('thumbnail').attr('url')+'" /><br />'+$(this).find('summary').text()+'<br />');
+							$('#picasa').append('<div class="cell"><a href='+"#"+'><img class="image" src="'+$(this).find('thumbnail').attr('url')+'" /><br />'+$(this).find('summary').text().substr(0,20)+"..."+'<br /></div>');
 						}
 					});
 					if($(data).find('link').attr('rel')!=undefined)
 					{
 						console.log($(data).find('link').attr('rel'));
-						$('#picasa').append($('<a id="picasaMore" class="more" data-role="button" data-icon="forward" onclick="listing_photos(access_token,refresh_token);" />').text('More..'));
+						$('#picasa').append($('<a data-role="button" data-inline="true" data-theme="a" data-icon="arrow-d" data-iconpos="right" id="picasaMore" class="more" onclick="listing_photos(access_token,refresh_token);" />').text('More..'));
 					}
 				},
 		error: function( error ){
