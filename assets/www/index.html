@@ -266,7 +266,7 @@
 				date = $("#editDate").val();
 				time = $("#editTime").val();
 				loc= $("#editLocation").val();
-				people=$("#editPeople").val().split(",");
+				//people=$("#editPeople").val().split(",");
 				description=$("#editDiscription").val();
 				if(loc!=""){
 					adressToCoordinate(loc);
@@ -281,12 +281,12 @@
 				$("#editTime").val(getTime());
 				$("#editLocation").val(getLocation());
 				$("#editDiscription").val(getDescription());
-				var people=getPeople();
-				var s="";
-				for (var i=0; i < people.length; i++) {
-				  s=s+people[i]+',';
-				};
-				$("#editPeople").val(s);
+				// var people=getPeople();
+				// var s="";
+				// for (var i=0; i < people.length; i++) {
+				  // s=s+people[i]+',';
+				// };
+				// $("#editPeople").val(s);
 			});
 			
 			$('#photoTag').live('pageshow', function () {
@@ -301,7 +301,7 @@
 				$("#editTime").val("");
 				$("#editLocation").val("");
 				$("#editDiscription").val("");
-				$("#editPeople").val("");
+			//	$("#editPeople").val("");
 			}
         
         	function onMenuClick(){
@@ -399,11 +399,11 @@
 					<label for="textarea"> Location </label>
 					<input type="text" name="searchbox" id="editLocation" value="" />
 				</div>
-				<div data-role="fieldcontain">
+				<!-- <div data-role="fieldcontain">
 					<label for="textarea"> People: </label>
 					<textarea cols="40" rows="8" name="textarea" id="editPeople"></textarea>
 					<a href="#ContactsPage" data-role="button" data-theme="a"  data-mini="true">Browse</a>
-				</div>
+				</div> -->
 
 				<div data-role="fieldcontain">
 					<label for="textarea"> Discription </label>
@@ -432,21 +432,18 @@
 		<!-- Page End -->
 
 		<!-- Confirm Delete Dialog-->
-		<div id="ConfirmDelete" data-role="page">
+		<div id="ConfirmDelete" data-role="dialog">
 			<div data-role="header">
 				<h1>Confirm Delete</h1>
 			</div>
 			<div data-role="content">
-
 				<p>
 					Are you sure you want to delete this photo?
 				</p>
 				<a href="index.html"
-				data-role="button" onclick="deleteFile()"
-				data-theme="b">Delete</a>
+				data-role="button" onclick="deleteFile()">Delete</a>
 				<a href="index.html"
-				data-role="button"
-				data-theme="b">Cancel</a>
+				data-role="button">Cancel</a>
 			</div>
 		</div>
 		<!-- Page End -->

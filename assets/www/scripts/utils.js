@@ -19,16 +19,17 @@
 
 var fileURI;
 
-function deleteFile(filepath) {
-	window.resolveLocalFileSystemURI(filepath, deleteEntry, function() {
+function deleteFile() {
+	window.resolveLocalFileSystemURI(uri, deleteEntry, function() {
 		alert('error: unable to resovle local fs uri')
 	});
-	reset();
+	
 }
 
 function deleteEntry(entry) {
 	entry.remove(function(entry) {
 		alert('Removal succeeded');
+		onHomeButtonClicked();
 	}, function(error) {
 		alert('Error removing file: ' + error.code);
 	});
@@ -154,10 +155,12 @@ function onHomeButtonClicked(){
 	$('#photoTagButton').hide();
 	$('#deleteButton').hide();
 	$('#homeButton').hide();
+	$('#editDataButton').hide();
 	
 	$('#captureButton').show();
 	$('#galleryButton').show();
 	$('#webAlbumButton').show();
+	$('#searchButton').show();
 	$('#helpButton').show();
 }
 
