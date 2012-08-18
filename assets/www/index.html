@@ -95,10 +95,9 @@
 			var windowWidth;
 			var windowHeight;
 			
-			var tagObjects;
-			var tagObjectsSaved;
-			var tagObjects;
-			var tagObjectsSaved;
+			var tagObjects;	//Newly added tags which not yet saved
+			var tagObjectsSaved; //Tags loaded from database
+
 			// Wait for device
 			document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -121,8 +120,11 @@
 				});
 				adjustScreenLayout();
 				
-				//To handle menu button clicks
-				document.addEventListener("menubutton", onMenuClick, false);		
+				//To handle menu button presses
+				document.addEventListener("menubutton", onMenuClick, false);	
+				
+				//To handle back button presses
+				document.addEventListener("backbutton", onBackKeyDown, false);	
 			}
 
 			//Document ready function
@@ -493,6 +495,10 @@
 				</div>
 
 			</div>
+			<!-- Page Footer Start -->
+			<div data-role="footer" data-position="fixed">				
+			</div>
+			<!-- Page Footer End -->
 		</div>
 		<!-- Page End -->
 		
@@ -543,6 +549,10 @@
 					<div id="map_canvas" align="center"></div>
 				</div>		
 			</div>
+			<!-- Page Footer Start -->
+			<div data-role="footer" data-position="fixed">				
+			</div>
+			<!-- Page Footer End -->
 		</div>
 		<!-- Page End -->
 		
@@ -553,10 +563,10 @@
 			</div>
 			<div data-role="content">				
 				<div id="options">
-					<a href="#"
+					<!-- <a href="#"
 					data-role="button" data-mini="false" data-icon="grid" onclick='viewAllImages()'>View all photos</a>
 					<a href="#mapView"
-					data-role="button" data-mini="false" data-icon="grid" onclick=''>View all in map</a>
+					data-role="button" data-mini="false" data-icon="grid" onclick=''>View all in map</a> -->
 					<a href="#help"
 					data-role="button" data-mini="false" data-icon="info" onclick=''>Help</a>
 					<a href="#about"
@@ -578,15 +588,19 @@
 					<img id="tagImage"/>
 				</div>
 				<a href="#" id="enableTaggingButton"
-				data-role="button" data-mini="false" data-icon="grid" onclick='enableTagging()'>Enable Tagging</a>
+				data-role="button" data-mini="false" data-icon="grid" onclick='enableTagging()'>Add Tags</a>
 				<a href="#" id="saveTagsButton"
 				data-role="button" data-mini="false" data-icon="grid" style="display: none" onclick='saveTags()'>Save tags</a>
 				<a href="#" id="clearTagsButton"
-				data-role="button" data-mini="false" data-icon="delete" style="display: none" onclick='clearTags()'>Clear tags</a>
+				data-role="button" data-mini="false" data-icon="delete" onclick='clearTags()'>Clear tags</a>
 				<a href="#" id="cancelTaggingButton"
 				data-role="button" data-mini="false" data-icon="grid" style="display: none" onclick='enableTagging()'>Cancel</a>
 				
 			</div>
+			<!-- Page Footer Start -->
+			<div data-role="footer" data-position="fixed">				
+			</div>
+			<!-- Page Footer End -->
 		</div>
 		<!-- Page End -->
 		
@@ -607,6 +621,10 @@
 					<li>For Flickr and Picasa, one needs to copy paste the code that is displayed</li>
 				</ul>
 			</div>
+			<!-- Page Footer Start -->
+			<div data-role="footer" data-position="fixed">				
+			</div>
+			<!-- Page Footer End -->
 		</div>
 		<!-- Page End -->
 		

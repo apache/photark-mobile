@@ -29,6 +29,7 @@ function deleteFile() {
 function deleteEntry(entry) {
 	entry.remove(function(entry) {
 		alert('Removal succeeded');
+		removeFromDB();
 		onHomeButtonClicked();
 	}, function(error) {
 		alert('Error removing file: ' + error.code);

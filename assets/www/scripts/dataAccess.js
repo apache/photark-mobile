@@ -194,6 +194,15 @@ function deleteTagRecords(tx){
 	tx.executeSql('DELETE FROM PEOPLE WHERE URI="'+uri+'"');
 }
 
+function removeFromDB(){
+	db.transaction(deleteRecords, errorCB, successCB);
+}
+
+function deleteRecords(tx) {
+	tx.executeSql('DELETE FROM PEOPLE WHERE URI="'+uri+'"');
+	tx.executeSql('DELETE FROM MAIN WHERE URI="'+uri+'"');
+}
+
 
 
 

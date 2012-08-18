@@ -51,13 +51,18 @@ function TagObject(name, x, y) {
 
 function saveTags() {
 	for (i = 0; i < tagObjects.length; i++) {
+		if(tagObjects.length==0){
+			alert("No new tags has been added.");
+		}
 		addTag(tagObjects[i].name, tagObjects[i].x, tagObjects[i].y);
+		tagObjectsSaved.push(tagObjects[i]);
 	}
+	tagObjects=new Array();	//buffer has to be cleared 
 	alert("Tags Saved Successfully.");
+	enableTagging();
 }
 
 function markTags(tagObjectsSaved) {
-
 	for (i = 0; i < tagObjectsSaved.length; i++) {
 		showTag(tagObjectsSaved[i].name, parseInt(tagObjectsSaved[i].x),
 				parseInt(tagObjectsSaved[i].y));
@@ -73,9 +78,27 @@ function showTag(name, x, y) {
 }
 
 function clearTags() {
-	deleteTags();
-	$('#tagPicture').html('<img id="tagImage"/>');
-	displayTagImage(getURI());
+	$('<div>').simpledialog2({
+	    mode: 'button',
+	    headerText: 'Delete Tags',
+	    headerClose: true,
+	    buttonPrompt: 'Are you sure you want to delete all the tags in this photo?',
+	    buttons : {
+	      'OK': {
+	        click: function () { 
+	        	deleteTags();
+	        	$('#tagPicture').html('<img id="tagImage"/>');
+	        	displayTagImage(getURI());
+	        }
+	      },
+	      'Cancel': {
+	        click: function () { 
+	        	//Do nothing
+	        },
+	        icon: "delete",
+	      }
+	    }
+	})
 }
 
 function displayTagImage(uri) {
@@ -98,17 +121,14 @@ function enableTagging() {
 	if(!tagEnabled){
 		tagEnabled=true;
 		$('#saveTagsButton').show();
-		$('#clearTagsButton').show();
-		$('#cancelTaggingButton').show();
-		
+		$('#clearTagsButton').hide();
+		$('#cancelTaggingButton').show();	
 		$('#enableTaggingButton').hide();
 	}else{
 		tagEnabled=false;
 		$('#saveTagsButton').hide();
-		$('#clearTagsButton').hide();
-		$('#cancelTaggingButton').hide();
-		
-		$('#enableTaggingButton').show();
-		
+		$('#clearTagsButton').show();
+		$('#cancelTaggingButton').hide();		
+		$('#enableTaggingButton').show();		
 	}
 }
