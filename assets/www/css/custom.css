@@ -1,3 +1,17 @@
 #tagPicture p {
     position: absolute;   
 }
+.more
+{
+	text-align:right;
+}
+.cell
+{
+	float: left;
+	width:	150px;
+	height:150px;
+}
+.image
+{
+	margin:auto;
+}
