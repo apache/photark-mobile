@@ -11,6 +11,7 @@
 		type="text/css" />
 		<link href="css/jquery.mobile.simpledialog.css" rel="stylesheet"
 		type="text/css" />
+		<!-- This file contains custom CSS definitions.  -->
 		<link href="css/custom.css" rel="stylesheet"
 		type="text/css" />
 		<style>
@@ -29,28 +30,38 @@
 				margin:auto;
 			}
 		</style>
+		
+		<!-- JQuery Mobile dependencies  -->
 		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="scripts/jquery.mobile-1.1.0.min.js"></script>
+		
+		<!-- Date Picker UI component -->
 		<script type="text/javascript" src="scripts/mobiscroll-2.0.full.min.js"></script>
+		
+		<!-- Phonegap dependencies -->
 		<script type="text/javascript" charset="utf-8" src="scripts/cordova-1.8.0.js" ></script>
+		
+		<!-- Phtoswipe photo galleryUI component dependencies -->
 		<script type="text/javascript" charset="utf-8" src="scripts/klass.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/code.photoswipe-3.0.5.min.js"></script>
+		
 		<!--For Facebook Implementation Start-->
 		<script type="text/javascript" src="scripts/cdv-plugin-fb-connect.js"></script><!--Facebook Connect Plugin-->
 		<script type="text/javascript" src="scripts/facebook_js_sdk.js"></script><!--Facebook JS SDK-->
 		<script type="text/javascript" src="scripts/facebook.js"></script><!--Facebook Implementation-->
 		<!--For Facebook Implementation End-->
+		
+		<!-- Library to show dialog boxes -->
 		<script type="text/javascript" charset="utf-8" src="scripts/jquery.mobile.simpledialog2.js"></script>
+		
+		<!-- Photark core Java Script files --> 
+		<script type="text/javascript" charset="utf-8" src="scripts/photark_UI.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/photark_events.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/contacts.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/utils.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/tagging.js" ></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/dataAccess.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/search.js"></script>	
-		<script type="text/javascript" charset="utf-8" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.js"></script>
-		<!-- <script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.services.js"></script> -->
-		<script type="text/javascript" charset="utf-8" src="scripts/MapView.js"></script>
 		
 		<!--For Flickr Implementation Start-->
 		<script type="text/javascript" charset="utf-8" src="scripts/childbrowser.js"></script>
@@ -61,11 +72,20 @@
 		<!--For Picasa Implementation Start-->
 		<script type="text/javascript" charset="utf-8" src="scripts/picasa.js"></script>
 		<!--For Picasa Implementation End-->
+		
+		<!-- Google Maps API -->
 		<script type="text/javascript" charset="utf-8" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
+		
+		<!-- Photark core Java Script files --> 
 		<script type="text/javascript" charset="utf-8" src="scripts/geoLocation.js" ></script>
+		
+		<!-- map UI library for JQuery -->
 		<script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.js"></script>
 		<!-- <script type="text/javascript" charset="utf-8" src="scripts/jquery.ui.map.services.js"></script> -->
+		
+		<!-- Photark core Java Script files -->
 		<script type="text/javascript" charset="utf-8" src="scripts/MapView.js"></script>
+		
 		<script type="text/javascript">
 			var pictureSource;
 			// picture source
@@ -83,17 +103,12 @@
 			document.addEventListener("deviceready", onDeviceReady, false);
 
 			function onDeviceReady() {
-				
 				checkNetwork();
 				
 				pictureSource = navigator.camera.PictureSourceType;
 				destinationType = navigator.camera.DestinationType;
-				getContacts();
-				$('#ContactsPage li a').live('click', function() {
-					var name = $(this).text();
-					onContactsClick(name);
-				});
-
+				getContacts();	//TODO move to a single method
+				
 				openDB();	//Initialize the database
 				
 				//Screen orientation changed
@@ -107,108 +122,57 @@
 				adjustScreenLayout();
 				
 				//To handle menu button clicks
-				document.addEventListener("menubutton", onMenuClick, false);	
-				
-				//Auto complete feature of location
-				var options = {
-  					types: ['(cities)'
-					]
-				};
-
-				
+				document.addEventListener("menubutton", onMenuClick, false);		
 			}
 
 			//Document ready function
 			$(function() {
 
-				// Handler for Date Picker
-
-				$('#editDate').scroller({
-					preset : 'date',
-					theme : 'default',
-					display : 'modal',
-					mode : 'scroller',
-					dateOrder : 'yymmdd',
-					dateFormat : "yy-mm-dd"
-				});
-
-				//Handler for time picker
-				$('#editTime').scroller({
-					preset : 'time',
-					theme : 'default',
-					display : 'modal',
-					mode : 'scroller'
-				});
+				initializeDataPickers(); //photark_UI.js
+				initializeTimePickers();				
 				
-				$('#searchStartDate').scroller({
-					preset : 'date',
-					theme : 'default',
-					display : 'modal',
-					mode : 'scroller',
-					dateOrder : 'yymmdd',
-					dateFormat : "yy-mm-dd"
-				});
-				
-				$('#searchEndDate').scroller({
-					preset : 'date',
-					theme : 'default',
-					display : 'modal',
-					mode : 'scroller',
-					dateOrder : 'yymmdd',
-					dateFormat : "yy-mm-dd"
-				});
-				
-				 $("#tagPicture").click(function(e) {
-				 	 e.preventDefault();
-				 	 var x = e.pageX - this.offsetLeft;
-				     var y = e.pageY - this.offsetTop;				     
-				 	 showDialog(e,x,y) ;
-			    })
+				initilizeClickEvents(); //photark_events.js 
 			    	
-			    $("#tagPicture").css({ 
-					    'position': 'relative'
-			    });
-			    
-			    if(google) {
+			    //Auto complete feature of location
+				var options = {
+  					types: ['(cities)'
+					]
+				};
+				if(google) {		//TODO check which object is undefined
 					var autocomplete = new google.maps.places.Autocomplete($("#editLocation")[0], options);
 					google.maps.event.addListener(autocomplete, 'place_changed', function() {
 						var place = autocomplete.getPlace();
 						//console.log(place.address_components);
 					});
 				} else {
-					alert("location services not available");
-				}
 
+				}
+				///////////////////////////////////
 			});
 
-			function onPhotoDataSuccess(imageData) {
-				var largeImage = document.getElementById('largeImage');
-				largeImage.style.display = 'block';
-				largeImage.src = "data:image/jpeg;base64," + imageData;
-			}
-
 			function onPhotoURISuccess(imageURI) {
-				$("#metadata").html("");
+				resetView();
+			
 				var largeImage = document.getElementById('largeImage');
-
 				largeImage.style.display = 'block';
 				largeImage.src = imageURI;
 				
 				onImageUpdated();				
 				
-				$('#toolbar').listview("create");
 				uri= imageURI;
 				window.resolveLocalFileSystemURI(imageURI, onFileEntryComplete, isFail);
 				
-				tagObjects=new Array();
+				//initialize view tags page
+				displayTagImage(imageURI) ;
 				
-			    $('#largeImage').css({
-			          // Using jQuery CSS we write the $width variable we previously specified as a pixel value. We use max-width incase the image is smaller than our viewport it won't scale it larger. Don't forget to set height to auto or else it will squish your photos.
-			          'max-width' : windowWidth , 'height' : 'auto'
-			    });   
-			    
+				//clear arrays
+				tagObjects=new Array();
 			    tagObjectsSaved=new Array();
+			    
+			    //getData about loaded image
 				viewData(imageURI);
+				
+				//resetting click function to view current image full screen
 				$('#largeImage').click(function() { fullScreen(largeImage.src); });
 
 			}
@@ -225,20 +189,6 @@
 			function onFileEntryComplete(fileEntry) {
 				fileEntry.file(successFile, isFail);
 				fileEntry.getMetadata(successMetadata, isFail);
-			}
-
-			function successMetadata(metadata) {
-				$("#metadata").append("<p> LastModified:" + metadata.modificationTime + "</p> ");
-
-			}
-
-			function successFile(file) {
-				$("#metadata").append("<p> Size:" + file.size + "bytes </p> <p> Type:" + file.type + " </p>");
-
-			}
-
-			function isFail() {
-				alert("Error Occured");
 			}
 
 			function capturePhoto() {
@@ -259,18 +209,6 @@
 				});
 			}
 
-			function onFail(message) {
-				alert('Failed because: ' + message);
-			}
-
-			function editDateOnClick(parent) {
-				parent.scroller('show');
-			}
-
-			function editTimeOnClick(parent) {
-				$('#editTime').scroller('show');
-			}
-
 			function save() {
 				nickname = $("#nickName").val();
 				date = $("#editDate").val();
@@ -284,39 +222,7 @@
 				updateDB();
 			}
 			
-			//This method load existing metadata to edit metadata page on page load
-			$('#EditMetadata').live('pageshow', function () {
-				$("#nickName").val(getNickname());
-				$("#editDate").val(getDate());
-				$("#editTime").val(getTime());
-				$("#editLocation").val(getLocation());
-				$("#editDiscription").val(getDescription());
-				// var people=getPeople();
-				// var s="";
-				// for (var i=0; i < people.length; i++) {
-				  // s=s+people[i]+',';
-				// };
-				// $("#editPeople").val(s);
-			});
-			
-			$('#photoTag').live('pageshow', function () {
-				$('#tagPicture').html('<img id="tagImage"/>');
-				displayTagImage(uri) ;
-				markTags(tagObjectsSaved);
-			});
-			
-			function clearMetadata(){
-			    $("#nickName").val("Not defined");
-				$("#editDate").val("");
-				$("#editTime").val("");
-				$("#editLocation").val("");
-				$("#editDiscription").val("");
-			//	$("#editPeople").val("");
-			}
-        
-        	function onMenuClick(){
-        		$.mobile.changePage("#optionMenu");
-        	}
+			initializePageShowFunctions();
 
 		</script>
 	</head>
@@ -629,7 +535,7 @@
 		<!-- Map View-->
 		<div id="mapView" data-role="page">
 			<div data-role="header">
-				<a href="index.html" data-icon="delete">Back</a>
+				<a href="index.html" data-icon="back">Back</a>
 				<h1>Map View</h1>
 			</div>
 			<div data-role="content">
