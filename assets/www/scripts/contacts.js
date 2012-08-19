@@ -16,18 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+var contactsLoaded=false;
 
 function getContacts() {
-	var optFilter = new ContactFindOptions();
-	optFilter.filter = "";
-	// to return all contacts
-	optFilter.multiple = true;
-	// return multiple results
-	fields = [ "name" ];
+	if(!contactsLoaded){
+		contactsLoaded=true;
+		var optFilter = new ContactFindOptions();
+		optFilter.filter = "";
+		// to return all contacts
+		optFilter.multiple = true;
+		// return multiple results
+		fields = [ "name" ];
 
-	// get all contacts
-	navigator.contacts.find(fields, gcsSuccess, gcsError, optFilter);
+		// get all contacts
+		navigator.contacts.find(fields, gcsSuccess, gcsError, optFilter);
+	}
+	
 }
 
 /* get all contacts error */
@@ -79,10 +83,8 @@ function gcsSuccess(contacts) {
 }
 
 function onContactsClick(name){
-	var temp=$('#editPeople').val();
-	temp=temp+name;
-	people=temp.split(",");
-	$.mobile.changePage( $("#EditMetadata") );
+	$('#editPeople').val(name);
+	$.mobile.changePage( $("#NewTag") );
 }
 
 

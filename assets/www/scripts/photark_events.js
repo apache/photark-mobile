@@ -53,6 +53,11 @@ function initializePageShowFunctions() {
 		$('#tagPicture').html('<img id="tagImage"/>');
 		displayTagImage(uri) ;
 		markTags(tagObjectsSaved);
+		markTags(tagObjects);
+	});
+	
+	$('#ContactsPage').live('pageshow', function () {
+		getContacts();
 	});
 }
 

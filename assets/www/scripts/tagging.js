@@ -18,26 +18,36 @@
  */
 
 var tagEnabled=false;
+var eValue;
+var xValue;
+var yValue;
+
 
 function showDialog(e, x, y) {
 	if(tagEnabled){
-		$('<div>').simpledialog2({
-			mode : 'button',
-			headerText : 'Tag',
-			headerClose : true,
-			buttonPrompt : 'Type Name',
-			buttonInput : true,
-			buttons : {
-				'OK' : {
-					click : function() {
-							var name = $.mobile.sdLastInput;
-							showTag(name, x, y);
-							var tgx = new TagObject(name, x, y);
-							tagObjects.push(tgx);
-					}
-				},
-			}
-		})
+//		$('<div>').simpledialog2({
+//			mode : 'button',
+//			headerText : 'Tag',
+//			headerClose : true,
+//			buttonPrompt : 'Type Name',
+//			buttonInput : true,
+//			buttons : {
+//				'OK' : {
+//					click : function() {
+//							var name = $.mobile.sdLastInput;
+//							showTag(name, x, y);
+//							var tgx = new TagObject(name, x, y);
+//							tagObjects.push(tgx);
+//					}
+//				},
+//			}
+//		})
+		
+		eValue=e;
+		xValue=x;
+		yValue=y;
+		
+		$.mobile.changePage("#NewTag");
 	}else{
 		alert("Tagging not enabled.");
 	}
@@ -131,4 +141,19 @@ function enableTagging() {
 		$('#cancelTaggingButton').hide();		
 		$('#enableTaggingButton').show();		
 	}
+}
+
+function addTagClicked() {
+	var name = $('#editPeople').val();
+	showTag(name, xValue, yValue);
+	var tgx = new TagObject(name, xValue, yValue);
+	tagObjects.push(tgx);
+	xValue=null;
+	yValue=null;
+	$.mobile.changePage("#photoTag");
+}
+
+function cancelTagging() {
+	tagObjects=new Array();
+	enableTagging();
 }
