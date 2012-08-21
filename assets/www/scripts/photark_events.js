@@ -17,15 +17,17 @@
  * under the License.
  */
 
+//Contains event based actions of the UI
 function initilizeClickEvents() {
-	
+
+	// Clicked location of the photo has to identified to add a new tag
 	$("#tagPicture").click(function(e) {
-	 	 e.preventDefault();
-	 	 var x = e.pageX - this.offsetLeft;
-	     var y = e.pageY - this.offsetTop;				     
-	 	 showDialog(e,x,y) ;
-    });
-	
+		e.preventDefault();
+		var x = e.pageX - this.offsetLeft;
+		var y = e.pageY - this.offsetTop;
+		showDialog(e, x, y);
+	});
+
 	$('#ContactsPage li a').live('click', function() {
 		var name = $(this).text();
 		onContactsClick(name);
@@ -34,8 +36,8 @@ function initilizeClickEvents() {
 }
 
 function initializePageShowFunctions() {
-	//This method load existing metadata to edit metadata page on page load
-	$('#EditMetadata').live('pageshow', function () {
+	// This method load existing metadata to edit metadata page on page load
+	$('#EditMetadata').live('pageshow', function() {
 		$("#nickName").val(getNickname());
 		$("#editDate").val(getDate());
 		$("#editTime").val(getTime());
@@ -44,23 +46,22 @@ function initializePageShowFunctions() {
 		// var people=getPeople();
 		// var s="";
 		// for (var i=0; i < people.length; i++) {
-		  // s=s+people[i]+',';
+		// s=s+people[i]+',';
 		// };
 		// $("#editPeople").val(s);
 	});
-	
-	$('#photoTag').live('pageshow', function () {
+
+	// Tags are marked when tag page is loaded
+	$('#photoTag').live('pageshow', function() {
 		$('#tagPicture').html('<img id="tagImage"/>');
-		displayTagImage(uri) ;
+		displayTagImage(uri);
 		markTags(tagObjectsSaved);
 		markTags(tagObjects);
 	});
-	
-	$('#ContactsPage').live('pageshow', function () {
+
+	// User may click the browse button to add tags using contacts. So it has to
+	// be initialized
+	$('#ContactsPage').live('pageshow', function() {
 		getContacts();
 	});
 }
-
-
-
-

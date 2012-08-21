@@ -17,16 +17,17 @@
  * under the License.
  */
 
-
+//Maps has to be initialized to the location of the current image when loaded
 $('#mapView').live("pageshow", function() {
 	if (getLocation() != "" && getLocation() != "undefined" && !(typeof(getLocation()) === 'undefined')) {
+		//Has to convert to coordinates first
 		var geocoder2 = new google.maps.Geocoder();
 		geocoder2.geocode({'address': getLocation()}, function(results, status) {
 		    if (status == google.maps.GeocoderStatus.OK) {		        
 		        $('#map_canvas').gmap({'center': new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()), 'zoom': 10, 'disableDefaultUI':false, 'callback': function() {
 					var self = this;
 					self.addMarker({'position': this.get('map').getCenter() }).click(function() {
-						self.openInfoWindow({ 'content': 'Hello World!' }, this);
+						self.openInfoWindow({ 'content': getLocation() }, this);
 					});	
 				}});
 		    } else {

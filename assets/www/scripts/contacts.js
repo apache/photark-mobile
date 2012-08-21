@@ -16,8 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+//This class is used to deal with phonebook contacts
+
 var contactsLoaded=false;
 
+//load contacts and populate the contacts page
 function getContacts() {
 	if(!contactsLoaded){
 		contactsLoaded=true;
@@ -82,6 +86,7 @@ function gcsSuccess(contacts) {
 		$('#allContacts').html('No contacts');
 }
 
+//On click name has to be added to the add tag text box
 function onContactsClick(name){
 	$('#editPeople').val(name);
 	$.mobile.changePage( $("#NewTag") );

@@ -17,7 +17,11 @@
  * under the License.
  */
 
+//This class is used to interact with the SQLite database
 
+
+//Global variables
+//When a photo is loaded these will be initialized
 var uri=0;
 var nickname="Not defined.";
 var date;
@@ -29,6 +33,7 @@ var db;
 var clause;
 var result=new Array();
 
+//getter methods
 
 function getNickname(){
 	return nickname;
@@ -58,14 +63,15 @@ function getURI() {
 	return uri;
 }
 
+function getResult() {
+	return result;
+}
 
+//This has to be called once at the start of the application
+//Initialize the database connection
 function openDB() {
 	db = window.openDatabase("photark", "1.0", "DB", 1000000);
 	db.transaction(populateDB, errorCB, successCB);
-}
-
-function getResult() {
-	return result;
 }
 
 function populateDB(tx) {
@@ -81,6 +87,8 @@ function successCB() {
 	//Do nothing
 }
 
+
+//gets data of a image and initialize variables
 function viewData(img){
 	uri=img;
 	clearData();
@@ -123,8 +131,8 @@ function queryPeopleSuccess(tx, results) {
 	updateHome();
 }
 
+//save variable values to the database
 function updateDB(){
-	//var db = window.openDatabase("photark", "1.0", "DB", 1000000);
 	db.transaction(insertToDB, errorCB, successCB);
 	updateHome();
 }
@@ -136,6 +144,7 @@ function insertToDB(tx) {
 	}
 }
 
+//update page with loaded data
 function updateHome(){
 	temp4="";
 	for (i = 0; i < tagObjectsSaved.length; i++) {
@@ -150,6 +159,7 @@ function updateHome(){
 	$("#metadata").append("<p> Time: "+time+"</p>");
 }
 
+//save a tag to the database
 function addTag(name,x,y){
 	db.transaction(function(tx){
 		  saveTag(tx,uri,name,x,y);
@@ -194,6 +204,7 @@ function deleteTagRecords(tx){
 	tx.executeSql('DELETE FROM PEOPLE WHERE URI="'+uri+'"');
 }
 
+//remove all records with current uri
 function removeFromDB(){
 	db.transaction(deleteRecords, errorCB, successCB);
 }

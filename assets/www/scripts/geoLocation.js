@@ -20,6 +20,8 @@
 //<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 var pos;
 
+//This is used to call location based services
+
 function onGeoSuccess(position) {
 	pos=position;
     alert( 'Location success: '+pos.coords.latitude+","+ pos.coords.longitude);
@@ -32,7 +34,7 @@ function onGeoError(error) {
           'message: ' + error.message + '\n');
 }
 
-
+//Get device location (using GPS,Wi-Fi,etc.)
 function getGeoLocation(){
 	try{
 	navigator.geolocation.getCurrentPosition(onGeoSuccess,onGeoError,{ enableHighAccuracy: false });
@@ -47,7 +49,7 @@ function addLocation(){
 	getGeoLocation();
 }
 
-
+//add location of the current photo to the database
 function updateLocation(){
 	var latlng = new google.maps.LatLng(pos.coords.latitude,pos.coords.longitude);
 	//var latlng = new google.maps.LatLng(6.9167,79.8333);
@@ -66,6 +68,7 @@ function updateLocation(){
 	$.mobile.changePage("#main");
 }
 
+//reverse geocoding using google maps API
 function adressToCoordinate(address) {
 	var loc;
 	var geocoder = new google.maps.Geocoder();

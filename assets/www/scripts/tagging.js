@@ -17,32 +17,14 @@
  * under the License.
  */
 
-var tagEnabled=false;
+var tagEnabled=false;	//Whether add tag has clicked or not
 var eValue;
 var xValue;
 var yValue;
 
-
+//Called when user click on the photo to add a tag
 function showDialog(e, x, y) {
-	if(tagEnabled){
-//		$('<div>').simpledialog2({
-//			mode : 'button',
-//			headerText : 'Tag',
-//			headerClose : true,
-//			buttonPrompt : 'Type Name',
-//			buttonInput : true,
-//			buttons : {
-//				'OK' : {
-//					click : function() {
-//							var name = $.mobile.sdLastInput;
-//							showTag(name, x, y);
-//							var tgx = new TagObject(name, x, y);
-//							tagObjects.push(tgx);
-//					}
-//				},
-//			}
-//		})
-		
+	if(tagEnabled){		
 		eValue=e;
 		xValue=x;
 		yValue=y;
@@ -55,8 +37,8 @@ function showDialog(e, x, y) {
 
 function TagObject(name, x, y) {
 	this.name = name;
-	this.x = x;
-	this.y = y;
+	this.x = x;		//x coordinate of clicked point
+	this.y = y;		//y coordinate of clicked point
 }
 
 function saveTags() {
@@ -72,6 +54,7 @@ function saveTags() {
 	enableTagging();
 }
 
+//Marks associated tags when a new image is loaded
 function markTags(tagObjectsSaved) {
 	for (i = 0; i < tagObjectsSaved.length; i++) {
 		showTag(tagObjectsSaved[i].name, parseInt(tagObjectsSaved[i].x),
@@ -87,6 +70,7 @@ function showTag(name, x, y) {
 	img.appendTo('#tagPicture');
 }
 
+//Delete all tags associated with current photo from the database
 function clearTags() {
 	$('<div>').simpledialog2({
 	    mode: 'button',
@@ -127,6 +111,7 @@ function displayTagImage(uri) {
 
 }
 
+//toggle UI controls
 function enableTagging() {
 	if(!tagEnabled){
 		tagEnabled=true;
@@ -153,6 +138,7 @@ function addTagClicked() {
 	$.mobile.changePage("#photoTag");
 }
 
+//Disable tag editing mode
 function cancelTagging() {
 	tagObjects=new Array();
 	enableTagging();

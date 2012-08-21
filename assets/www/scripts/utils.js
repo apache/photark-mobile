@@ -19,6 +19,7 @@
 
 var fileURI;
 
+//Delete a photo from the phone
 function deleteFile() {
 	window.resolveLocalFileSystemURI(uri, deleteEntry, function() {
 		alert('error: unable to resovle local fs uri')
@@ -42,6 +43,7 @@ function reset() {
 	$('#largeImage').attr("src", "images/logo.png");
 }
 
+//This uses photo swipe library to view a image in fullscreen
 function fullScreen(uri) {
 	$("#Gallery").html(
 			'<li><a href="' + uri + '" ><img src="' + uri
@@ -72,6 +74,7 @@ function scaleImageWidth(maxWidth, width, height, image) {
 	}
 }
 
+//Adjust UI elements according to the screen size
 function adjustScreenLayout() {
 	windowWidth = $(window).width();
 	windowHeight = $(window).height();
@@ -94,6 +97,7 @@ function adjustScreenLayout() {
 	$('#map_canvas').css('margin-right', 'auto');
 }
 
+//TODO not working
 function loadjscssfile(scriptUrl) {
 	var head = document.getElementsByTagName("head")[0];
 	script = document.createElement('script');
@@ -110,6 +114,7 @@ function validate(variable) {
 	}
 }
 
+//returns system date
 function getCurrentDate() {
 	var currentTime = new Date()
 	var month = currentTime.getMonth() + 1
@@ -118,6 +123,7 @@ function getCurrentDate() {
 	return (month + "/" + day + "/" + year);
 }
 
+//returns system time
 function getCurrentTime() {
 	var time = "";
 	var currentTime = new Date();
@@ -142,6 +148,7 @@ function getCurrentTime() {
 	return time;
 }
 
+//Check whether a data network is available
 function checkNetwork() {
 	var networkState = navigator.network.connection.type;
 	if (networkState == Connection.NONE) {
