@@ -583,19 +583,19 @@
 		</div>
 		<!-- Page End -->
 		
-		<!-- Add Tag Page-->
+		<!-- New Tag Dialog-->
 		<div id="NewTag" data-role="dialog">
 			<div data-role="header">
-				<h1>Confirm Delete</h1>
+				<h1>Add Tag.</h1>
 			</div>
 			<div data-role="content">
-				<p>
-					Are you sure you want to delete this photo?
-				</p>
-				<a href="index.html"
-				data-role="button" onclick="deleteFile()">Delete</a>
-				<a href="index.html"
-				data-role="button">Cancel</a>
+				<div data-role="fieldcontain">
+					<label for="tagName"> Name: </label>
+					<input type="text" name="tagName" id="editPeople" value=""/>
+					<a href="#ContactsPage" data-role="button" data-theme="a"  data-mini="true">Browse</a>
+				</div>
+				<a href="#" data-role="button" data-mini="true" onclick="addTagClicked()">Ok</a>
+				<a href="#photoTag" data-role="button"  data-mini="true">Cancel</a>
 			</div>
 		</div>
 		<!-- Page End -->

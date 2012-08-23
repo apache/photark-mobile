@@ -71,6 +71,15 @@ function onMenuClick(){
 	$.mobile.changePage("#optionMenu");
 }
 
+function onBackKeyDown(){
+	if($.mobile.activePage.attr("id") == "main"){
+		onHomeButtonClicked();
+	}else{
+		$.mobile.changePage("#main");
+	}	
+}
+
+//Clears edit metadata page. 
 function clearMetadata(){
     $("#nickName").val("Not defined");
 	$("#editDate").val("");
@@ -101,11 +110,12 @@ function resetView(){
     });   
 }
 
-
+//Adds last modified time to the image info page
 function successMetadata(metadata) {
 	$("#metadata").append("<p> LastModified:" + metadata.modificationTime + "</p> ");
 }
 
+//Adds image type to the image info page
 function successFile(file) {
 	$("#metadata").append("<p> Size:" + file.size + "bytes </p> <p> Type:" + file.type + " </p>");
 }
