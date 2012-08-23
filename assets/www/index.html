@@ -90,7 +90,6 @@
 				
 				pictureSource = navigator.camera.PictureSourceType;
 				destinationType = navigator.camera.DestinationType;
-				getContacts();	//TODO move to a single method
 				
 				openDB();	//Initialize the database
 				
@@ -558,9 +557,11 @@
 		<!-- Page End -->
 		
 		<!-- photo tag page-->
-		<div id="photoTag" data-role="page" data-add-back-btn="true"  data-theme="a">
+		<div id="photoTag" data-role="page"   data-theme="a">
 			<div data-role="header" >
 				<h1>Tag Photo</h1>
+				<a href="#main" 
+				data-role="button" data-mini="true" data-icon="back" >Back</a>
 			</div>
 			<div data-role="content">
 				<div id="tagPicture">
