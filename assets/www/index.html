@@ -11,6 +11,7 @@
 		type="text/css" />
 		<link href="css/jquery.mobile.simpledialog.css" rel="stylesheet"
 		type="text/css" />
+		<link rel="stylesheet"  href="css/MetroJs.lt.css" type="text/css" />
 		<!-- This file contains custom CSS definitions.  -->
 		<link href="css/custom.css" rel="stylesheet"
 		type="text/css" />
@@ -51,6 +52,7 @@
 		<script type="text/javascript" charset="utf-8" src="scripts/childbrowser.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/jquery.md5.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/sha1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/MetroJs.lt.js"></script>
 		<script type="text/javascript" charset="utf-8" src="scripts/photark_flickr.js"></script>
 		<!--For Flickr Implementation End-->
 		<!--For Picasa Implementation Start-->
@@ -216,7 +218,7 @@
 		<div id="main" data-role="page" data-theme="a">
 			<!-- Page Header Start -->
 			<div data-role="header" data-position="fixed">
-				<h1>PhotArc Mobile</h1>
+				<h1>PhotArk Mobile</h1>
 			</div>
 			<!-- Page Header End -->
 			<!-- Page Body Start -->
@@ -347,7 +349,7 @@
 		<div id="webAlbum" data-role="page">
 			<!-- Page Header Start -->
 			<div data-role="header" data-position="fixed">
-				<h1>PhotArc Mobile</h1>
+				<h1>PhotArk Mobile</h1>
 			</div>
 			<!-- Page Header End -->
 			<!-- Content Start-->
@@ -639,7 +641,24 @@
 			</div>
 		</div>
 		<!-- Page End -->
+		<script>
+		    //Script to remove the flashing jQuery transition between pages
+			$("a[data-role=tab]").each(function () {
+				var anchor = $(this);
+				anchor.bind("click", function () {
+					$.mobile.changePage(anchor.attr("href"), {
+					    transition: "none",
+					    changeHash: false
+					});
+					return false;
+				});
+			});
 		
+			$("div[data-role=page]").bind("pagebeforeshow", function (e, data) {
+				$.mobile.silentScroll(0);
+				$.mobile.changePage.defaults.transition = 'slide';
+			});
+		</script>
 
 	</body>
 </html>
